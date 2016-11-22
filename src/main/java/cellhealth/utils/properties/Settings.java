@@ -80,7 +80,7 @@ public class Settings {
             confProperties.load(fileProperties);
             instance.setAppName(confProperties.getProperty("appName"));
             instance.setL4jPattern(confProperties.getProperty("l4jPattern"));
-            instance.setL4jPatternConfig(confProperties.getProperty("l4jPatternConfig:"));
+            instance.setL4jPatternConfig(confProperties.getProperty("l4jPatternConfig"));
             instance.setL4jName(confProperties.getProperty("l4jName"));
             instance.setL4jGetLogger(confProperties.getProperty("l4jgetLogger"));
             fileProperties.close();
