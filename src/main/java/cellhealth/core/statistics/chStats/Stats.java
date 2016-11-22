@@ -42,7 +42,7 @@ public class Stats {
     }
 
     public void add(String name, String metric) {
-        this.stats.add(this.pathChStats + name + " " + metric + " " + System.currentTimeMillis() / 1000L + "\n");
+        this.stats.add(this.pathChStats + name + " " + metric + " " + System.currentTimeMillis() / 1000L);
     }
 
     public String getPathChStats() {
