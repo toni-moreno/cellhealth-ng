@@ -27,7 +27,7 @@ public class InfoBeans {
     public InfoBeans(WASConnection wasConnection) {
         this.mbeansManager = new MBeansManager(wasConnection);
         this.query = "*:*";
-        this.prefix = "logs/";
+        this.prefix = "/opt/cellhealth-ng/logs/";
     }
 
     public void setQuery(String query) {

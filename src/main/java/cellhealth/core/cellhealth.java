@@ -152,20 +152,20 @@ public class cellhealth {
     }
 
     public static void launchHelp() {
-        L4j.getL4j().info("################################");
-        L4j.getL4j().info("# WebSphere metrics collection #");
-        L4j.getL4j().info("#        CellHealth-ng         #");
-        L4j.getL4j().info("################################");
-        L4j.getL4j().info("Cellhealth have a diferents options");
-        L4j.getL4j().info("OPTIONS:");
-        L4j.getL4j().info("\t-l Show list of server beans");
-        L4j.getL4j().info("\t-b Show all beans");
-        L4j.getL4j().info("\t-o Show options of beans");
-        L4j.getL4j().info("\t-a Show attributes of beans");
-        L4j.getL4j().info("\t-h this help");
-        L4j.getL4j().info("CONFIGURATION OPTIONS (optional):");
-        L4j.getL4j().info("\t--host host of websphere");
-        L4j.getL4j().info("\t--port port of websphere");
-        L4j.getL4j().info("\t-v verbose");
+        System.out.println("################################");
+        System.out.println("# WebSphere metrics collection #");
+        System.out.println("#        CellHealth-ng         #");
+        System.out.println("################################");
+        System.out.println("Cellhealth have a diferents options");
+        System.out.println("OPTIONS:");
+        System.out.println("\t-l Show list of server beans");
+        System.out.println("\t-b Show all beans");
+        System.out.println("\t-o Show options of beans");
+        System.out.println("\t-a Show attributes of beans");
+        System.out.println("\t-h this help");
+        System.out.println("CONFIGURATION OPTIONS (optional):");
+        System.out.println("\t--host host of websphere");
+        System.out.println("\t--port port of websphere");
+        System.out.println("\t-v verbose");
     }
 }

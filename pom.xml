@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cellhealth-ng</groupId>
     <artifactId>cellhealth-ng</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
     <properties>
         <base.path>cellhealth-ng/</base.path>
         <junit.version>4.12</junit.version>
