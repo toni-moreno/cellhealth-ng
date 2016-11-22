@@ -3,6 +3,7 @@ package cellhealth.utils;
 import cellhealth.core.connection.MBeansManager;
 import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 
 import javax.management.ObjectName;
@@ -27,13 +28,17 @@ public class Utils {
         return nodeSplit[0];
     }
 
-    public static void showInstances(MBeansManager mbeansManager){
+    public static void showInstances(MBeansManager mbeansManager) {
+        try {
         Set<ObjectName> runtimes = mbeansManager.getAllServerRuntimes();
-        for(ObjectName serverRuntime: runtimes){
-            String serverName = serverRuntime.getKeyProperty(Constants.NAME);
-            String node = serverRuntime.getKeyProperty(Constants.NODE);
-            String showServerHost = (( node==null ) || ( node.length() == 0 ))?"<NOT SET IN CONFIG>":node;
-            L4j.getL4j().info("SERVER :" + serverName + " NODE: " + showServerHost);
+            for(ObjectName serverRuntime: runtimes){
+                String serverName = serverRuntime.getKeyProperty(Constants.NAME);
+                String node = serverRuntime.getKeyProperty(Constants.NODE);
+                String showServerHost = (( node==null ) || ( node.length() == 0 ))?"<NOT SET IN CONFIG>":node;
+                L4j.getL4j().info("SERVER :" + serverName + " NODE: " + showServerHost);
+            }
+        } catch (ConnectorNotAvailableException e) {
+            L4j.getL4j().error("showInstances Connector not available ",e);
         }
     }
 

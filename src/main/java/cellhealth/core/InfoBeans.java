@@ -3,6 +3,7 @@ package cellhealth.core;
 import cellhealth.core.connection.MBeansManager;
 import cellhealth.core.connection.WASConnection;
 import com.ibm.websphere.management.exception.ConnectorException;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -33,7 +34,7 @@ public class InfoBeans {
         this.query = query;
     }
 
-    public void listBean(){
+    public void listBean() throws ConnectorNotAvailableException {
         this.startFile("listbeans.info");
         for(ObjectName objectName: mbeansManager.getMBeans(this.query)){
             print("############## BEAN ##############\n");
@@ -47,7 +48,7 @@ public class InfoBeans {
         }
     }
 
-    public void listOperationsBean(){
+    public void listOperationsBean() throws ConnectorNotAvailableException {
         this.startFile("listOperationBeans.info");
         for(ObjectName objectName: mbeansManager.getMBeans(this.query)){
             print("############## BEAN ##############\n");
@@ -63,7 +64,7 @@ public class InfoBeans {
         }
     }
 
-    public void listAttributesBean(){
+    public void listAttributesBean() throws ConnectorNotAvailableException {
         this.startFile("listAttributeBeans.info");
         for(ObjectName objectName: mbeansManager.getMBeans(this.query)){
             print("############## BEAN ##############\n");

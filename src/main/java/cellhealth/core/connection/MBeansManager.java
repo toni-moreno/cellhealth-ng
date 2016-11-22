@@ -17,12 +17,12 @@ import java.util.Set;
 
 /**
  * Classe que facilita las consultas queryNames sobre AdminClient
- * @author Alberto Pascual
- * @version 1.0
+ * @author Alberto Pascual/Toni Moreno
+ * @version 2.0
  */
 
 public class MBeansManager {
-
+    //private Session s;
     private AdminClient client;
 
     /**
@@ -40,7 +40,7 @@ public class MBeansManager {
      * @param query consulta que se pasara al metodo queryNames
      * @return resultado de la consulta. Sino hay resultados devolverá nulo
      */
-    public Set<ObjectName> getMBeans(String query) {
+    public Set<ObjectName> getMBeans(String query)  throws ConnectorNotAvailableException  {
         if(this.client == null) {
             throw new NullPointerException();
         }
@@ -48,14 +48,15 @@ public class MBeansManager {
         try {
             objects = this.client.queryNames(new ObjectName(query), null);
         } catch (ConnectorNotAvailableException e) {
-            L4j.getL4j().warning("Connector not available");
+            L4j.getL4j().error("Connector not available",e);
+            throw new ConnectorNotAvailableException();
         } catch (ConnectorException e) {
             String[] classNameSplit = this.getClass().getName().split("\\.");
             L4j.getL4j().error(classNameSplit[classNameSplit.length-1] + ", " + Error.CONNECTOR_ERROR, e);
         } catch (MalformedObjectNameException e) {
             String[] classNameSplit = this.getClass().getName().split("\\.");
             L4j.getL4j().error(classNameSplit[classNameSplit.length-1] + ", " + Error.OBJECT_MALFORMED, e);
-        }
+        } 
         return this.castSetObjectNames(objects);
     }
 
@@ -78,7 +79,7 @@ public class MBeansManager {
      * @param query consulta que se pasara al metodo queryNames
      * @return resultado de la consulta. Sino hay resultados devolverá nulo
      */
-    public ObjectName getMBean(String query) {
+    public ObjectName getMBean(String query) throws ConnectorNotAvailableException  {
         Set mbeans = this.getMBeans(query);
         ObjectName objectName = null;
         if(mbeans != null && mbeans.size() > 0) {
@@ -96,17 +97,17 @@ public class MBeansManager {
      * Lanza la consulta "WebSphere:*,type=Server,j2eeType=J2EEServer"
      * @return all runtime servers
      */
-    public Set<ObjectName> getAllServerRuntimes()  {
+    public Set<ObjectName> getAllServerRuntimes() throws ConnectorNotAvailableException   {
             return this.getMBeans(Constants.QUERY_SERVER_RUNTIME);
     }
 
-    public String getNodeServerMBean(){
+    public String getNodeServerMBean() throws ConnectorNotAvailableException  {
         ObjectName objectName = getMBean("WebSphere:processType=ManagedProcess,*");
         return objectName.getKeyProperty("node");
     }
 
 
-    public Map<String,String> getPathHostChStats(){
+    public Map<String,String> getPathHostChStats() throws ConnectorNotAvailableException  {
         Map<String,String> pathChstats = new HashMap<String, String>();
         ObjectName dmgr = this.getMBean("WebSphere:processType=DeploymentManager,*");
         String cell = dmgr.getKeyProperty("cell");
@@ -130,7 +131,7 @@ public class MBeansManager {
                     }
                 }
             }
-        }
+        } 
         return pathChstats;
     }
 }

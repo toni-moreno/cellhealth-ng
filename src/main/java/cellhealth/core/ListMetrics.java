@@ -5,6 +5,7 @@ import cellhealth.core.connection.WASConnection;
 import cellhealth.core.statistics.MBeanStats;
 import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 import com.ibm.websphere.pmi.stat.WSStats;
 
@@ -37,7 +38,7 @@ public class ListMetrics {
 
     }
 
-    public void list() {
+    public void list() throws ConnectorNotAvailableException {
 
         List<String> options = new LinkedList<String>();
         options.add("yes");
@@ -71,7 +72,7 @@ public class ListMetrics {
                     String node = ((infoServer.get("node") == null) || (infoServer.get("node").length() == 0)) ? "<NOT SET IN CONFIG>" : infoServer.get("node");
                     System.out.println(count + ")" + " Server: " + infoServer.get("serverName") + " Node: " + node + " Type: " + serverRuntime.getKeyProperty("processType"));
                 }
-            }
+            }   
             boolean optionServerExit = false;
             do {
                 System.out.print("Select server [1-" + count +"]");
@@ -84,12 +85,18 @@ public class ListMetrics {
                     } else {
                         System.out.println("unknown option");
                     }
+                } catch (ConnectorNotAvailableException e) {
+                    L4j.getL4j().error("Connector not available",e);
                 } catch(NumberFormatException e){
                     System.out.println("unknown option");
                 }
             } while(!optionServerExit);
         } else {
+            try {
             serverPerfMBean = mbeansManager.getMBean("WebSphere:type=Perf,*");
+            }  catch (ConnectorNotAvailableException e) {
+                L4j.getL4j().error("Connector not available",e);
+            }
             String node = ((serverPerfMBean.getKeyProperty(Constants.NODE) == null) || (serverPerfMBean.getKeyProperty(Constants.NODE).length() == 0)) ? "<NOT SET IN CONFIG>" : serverPerfMBean.getKeyProperty(Constants.NODE);
             System.out.println("Server: " + serverPerfMBean.getKeyProperty("process") + " Node: " + node);
         }

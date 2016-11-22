@@ -3,6 +3,7 @@ package cellhealth.core.test;
 import cellhealth.core.connection.MBeansManager;
 import cellhealth.core.connection.WASConnection;
 import cellhealth.utils.Utils;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -38,7 +39,7 @@ public class TestMetrics {
     public static final String SEPARATOR = "" + SEPARATOR_CHAR;
     protected static final long BYTES_IN_MEGABYTE = 1024 * 1024;
 
-    public void test(){
+    public void test() throws ConnectorNotAvailableException{
 
         ObjectName dmgr = this.mbeansManager.getMBean("WebSphere:processType=DeploymentManager,*");
         String cell = dmgr.getKeyProperty("cell");

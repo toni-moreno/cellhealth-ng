@@ -8,9 +8,11 @@ import cellhealth.utils.properties.xml.CellHealthMetrics;
 import cellhealth.utils.properties.xml.Metric;
 import cellhealth.utils.properties.xml.MetricGroup;
 import cellhealth.utils.properties.xml.PmiStatsType;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 import com.ibm.websphere.pmi.stat.WSStats;
 
+import javax.management.JMRuntimeException;
 import javax.management.ObjectName;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -51,17 +53,24 @@ public class Capturer {
 
     private WSStats getWSStats() {
         WSStats wsStats = null;
-        this.serverPerfMBean = mbeansManager.getMBean("WebSphere:type=Perf,node=" + this.node + ",process=" + this.serverName + ",*");
-        ObjectName objectName = mbeansManager.getMBean("WebSphere:name=" + this.serverName + ",node=" + this.node + ",process=" + this.serverName + ",type=Server,*");
-        if (objectName != null) {
-            String[] signature = new String[]{"javax.management.ObjectName", "java.lang.Boolean"};
-            Object[] params = new Object[]{objectName, true};
-            try {
-                wsStats = (WSStats) mbeansManager.getClient().invoke(serverPerfMBean, "getStatsObject", params, signature);
-            } catch (Exception e) {
-                L4j.getL4j().error("Capturer ", e);
+        try {
+            this.serverPerfMBean = mbeansManager.getMBean("WebSphere:type=Perf,node=" + this.node + ",process=" + this.serverName + ",*");
+            ObjectName objectName = mbeansManager.getMBean("WebSphere:name=" + this.serverName + ",node=" + this.node + ",process=" + this.serverName + ",type=Server,*");
+            if (objectName != null) {
+                String[] signature = new String[]{"javax.management.ObjectName", "java.lang.Boolean"};
+                Object[] params = new Object[]{objectName, true};
+                try {
+                    wsStats = (WSStats) mbeansManager.getClient().invoke(serverPerfMBean, "getStatsObject", params, signature);
+                } catch (JMRuntimeException e) {
+                    L4j.getL4j().error("JMRuntime Exception ( Credentials maybe?) EXITING ",e);
+                    System.exit(-1);
+                } catch (Exception e) {
+                    L4j.getL4j().error("Capturer Generic Exception ", e);
+                }
             }
-        }
+        } catch (ConnectorNotAvailableException e) {
+                L4j.getL4j().error("Connector not available",e);
+        } 
         return wsStats;
     }
 

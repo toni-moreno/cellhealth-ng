@@ -7,6 +7,7 @@ import cellhealth.core.threads.Metrics.ThreadManager;
 import cellhealth.utils.logs.L4j;
 import cellhealth.utils.properties.Settings;
 import cellhealth.utils.properties.xml.ReadMetricXml;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 
 
 import java.util.HashMap;
@@ -106,7 +107,11 @@ public class cellhealth {
     public static void showListOfMetrics() {
         L4j.getL4j().info("Starting CellHealth - Metrics list");
         ListMetrics listMetrics = new ListMetrics(new WASConnectionSOAP());
-        listMetrics.list();
+        try {
+            listMetrics.list();
+        } catch (ConnectorNotAvailableException e) {
+             L4j.getL4j().error("Connector not available",e);
+        }
     }
 
     public static void launchListBean(int option){
@@ -118,15 +123,19 @@ public class cellhealth {
         if(query != null && query.length() > 0) {
             infoBeans.setQuery(query);
         }
-        if(option == 1) {
-            L4j.getL4j().info("Starting CellHealth - Bean list");
-            infoBeans.listBean();
-        } else if(option == 2){
-            L4j.getL4j().info("Starting CellHealth - Bean list operations");
-            infoBeans.listOperationsBean();
-        } else if(option == 3) {
-            L4j.getL4j().info("Starting CellHealth - Bean list attributes");
-            infoBeans.listAttributesBean();
+        try {
+            if(option == 1) {
+                L4j.getL4j().info("Starting CellHealth - Bean list");
+                infoBeans.listBean();
+            } else if(option == 2){
+                L4j.getL4j().info("Starting CellHealth - Bean list operations");
+                infoBeans.listOperationsBean();
+            } else if(option == 3) {
+                L4j.getL4j().info("Starting CellHealth - Bean list attributes");
+                infoBeans.listAttributesBean();
+            }
+        } catch (ConnectorNotAvailableException e) {
+                L4j.getL4j().error("Connector not available",e);
         }
     }
 
@@ -135,7 +144,11 @@ public class cellhealth {
 //        TreeBeans treeBeans = new TreeBeans(new WASConnectionSOAP());
 //        treeBeans.list();
         TestMetrics listMetrics = new TestMetrics(new WASConnectionSOAP());
-        listMetrics.test();
+        try {
+            listMetrics.test();
+        } catch (ConnectorNotAvailableException e) {
+            L4j.getL4j().error("Connector not available",e);
+        }
     }
 
     public static void launchHelp() {

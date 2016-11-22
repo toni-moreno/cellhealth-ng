@@ -3,6 +3,7 @@ package cellhealth.core.threads.Metrics;
 import cellhealth.core.connection.MBeansManager;
 import cellhealth.core.connection.WASConnection;
 import cellhealth.core.connection.WASConnectionSOAP;
+import com.ibm.websphere.management.Session;
 import cellhealth.core.statistics.Capturer;
 import cellhealth.core.statistics.chStats.Stats;
 import cellhealth.sender.Sender;
@@ -49,7 +50,9 @@ public class ThreadManager implements Runnable {
                 long elapsed = (System.currentTimeMillis() - start_time);
                 L4j.getL4j().debug("Elapsed calculated time: " + String.valueOf(Settings.propertie().getThreadInterval()-elapsed));
                 Thread.sleep(Settings.propertie().getThreadInterval()-elapsed);
-                //Thread.sleep(Settings.propertie().getThreadInterval());
+            } catch (ConnectorNotAvailableException e) {
+                L4j.getL4j().error("Connector not available",e);
+                connectToWebSphere();
             } catch (InterruptedException e) {
                 start = false;
                 L4j.getL4j().error("TreadManager sleep error: ", e);
@@ -57,7 +60,7 @@ public class ThreadManager implements Runnable {
         }
     }
 
-    private void launchThreads() {
+    private void launchThreads() throws ConnectorNotAvailableException {
         Set<ObjectName> runtimes = this.mbeansManager.getAllServerRuntimes();
         Date timeCountStart = new Date();
         ExecutorService executor = Executors.newFixedThreadPool(runtimes.size());
@@ -109,13 +112,14 @@ public class ThreadManager implements Runnable {
     }
 
     public void checkConnections(){
-        try {
-            mbeansManager.getClient().isAlive();
+        /*try {
+            Session Ses= mbeansManager.getClient().isAlive();
+            L4j.getL4j().info("Current Session: "+Ses.toString());
         } catch (ConnectorException e) {
             if(e instanceof ConnectorNotAvailableException){
                 connectToWebSphere();
             }
-        }
+        }*/
         while(!sender.isConnected()){
             try {
                 L4j.getL4j().warning("The sender is not connected , waiting to connect");

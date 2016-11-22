@@ -5,6 +5,7 @@ import cellhealth.core.connection.WASConnection;
 import cellhealth.core.statistics.MBeanStats;
 import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
+import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 import com.ibm.websphere.pmi.stat.WSStats;
 
@@ -40,7 +41,7 @@ public class TreeBeans {
 
     }
 
-    public void list() {
+    public void list()throws ConnectorNotAvailableException {
 
         List<String> options = new LinkedList<String>();
         options.add("yes");
