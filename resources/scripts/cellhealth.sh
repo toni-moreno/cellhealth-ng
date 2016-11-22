@@ -86,6 +86,12 @@ function start() {
 
 }
 
+function show_ch_option() {
+        ${JAVA_HOME}/bin/java $CELLHEALTH_PATH $CONFILE $CLIENTSAS $STDINCLIENTSAS $SERVERSAS $CLIENTSOAP $CLIENTIPC $JAASSOAP $CLIENTSSL $WAS_LOGGING -cp $CLASSPATH:${CELLHEALTH_HOME}/lib $LOG4JAVA -jar ${MAIN_JAR} $DMGR_CONFIG $1
+}
+
+
+
 function show_ch_opts() {
         ${JAVA_HOME}/bin/java $CELLHEALTH_PATH $CONFILE $CLIENTSAS $STDINCLIENTSAS $SERVERSAS $CLIENTSOAP $CLIENTIPC $JAASSOAP $CLIENTSSL $WAS_LOGGING -cp $CLASSPATH:${CELLHEALTH_HOME}/lib $LOG4JAVA -jar ${MAIN_JAR} $DMGR_CONFIG -h
 }
@@ -129,10 +135,12 @@ case "$1" in
     status $@
     ;;
   start)
-    [ -f $CELLHEALTH_HOME/logs/cellhealth.pid ] && {
-      echo "Error Other Cellhealth PID exists"
+    PID=`get_pidof`
+    if [[ -n $PID ]]
+    then
+      echo "Error Other Cellhealth PID exists($PID)"
       exit 1
-    }
+    fi
     shift
     start $@
     sleep 4
@@ -147,8 +155,15 @@ case "$1" in
     stop $@
     start $@
     ;;
-  chopts)
-    show_ch_opts
+  chopts) 
+    OPTION="$2"
+    [ -z "$OPTION" ] && {
+	#echo "OPTION -h"
+    	show_ch_opts
+    } || {
+	#echo "OPTION $2"
+	show_ch_option $2
+    }	 
     ;;
   *)
     usage
