@@ -44,12 +44,19 @@ public class ThreadManager implements Runnable {
         Utils.showInstances(this.mbeansManager);
         boolean start = true;
         while(start){
+            L4j.getL4j().debug("Begining Thread Manager Loop");
             try {
                 long start_time=System.currentTimeMillis();
                 this.launchThreads();
                 long elapsed = (System.currentTimeMillis() - start_time);
-                L4j.getL4j().debug("Elapsed calculated time: " + String.valueOf(Settings.propertie().getThreadInterval()-elapsed));
-                Thread.sleep(Settings.propertie().getThreadInterval()-elapsed);
+                long waittime = Settings.propertie().getThreadInterval()-elapsed;
+                L4j.getL4j().debug("Elapsed calculated time: " + String.valueOf(waittime));
+                if (waittime > 0 ) {
+                    Thread.sleep(Settings.propertie().getThreadInterval()-elapsed);
+                } else {
+                    Thread.sleep(Settings.propertie().getThreadInterval());
+                    L4j.getL4j().warning("The WaitTime has been computed less than 0 :"+String.valueOf(waittime) );
+                }
             } catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
                 connectToWebSphere();
@@ -95,6 +102,7 @@ public class ThreadManager implements Runnable {
                 }
                 waitToThreads = false;
             }
+            //TODO: review this condition , may be it depends on some config
             if(elapsed == 60000l){
                 L4j.getL4j().critical("The threads are taking too");
             }
