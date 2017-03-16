@@ -6,6 +6,7 @@ import cellhealth.sender.Sender;
 import cellhealth.utils.logs.L4j;
 import cellhealth.utils.properties.Settings;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
+import com.ibm.websphere.management.exception.ConnectorException;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ public class MetricsCollector implements Runnable {
                 this.chStats.count(metrics.size());
             }catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
+            }catch (ConnectorException e) {
+                L4j.getL4j().error("GENERIC Connector not available",e);
             }
         }
     }

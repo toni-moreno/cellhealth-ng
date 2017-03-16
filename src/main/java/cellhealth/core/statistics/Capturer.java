@@ -9,6 +9,7 @@ import cellhealth.utils.properties.xml.Metric;
 import cellhealth.utils.properties.xml.MetricGroup;
 import cellhealth.utils.properties.xml.PmiStatsType;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
+import com.ibm.websphere.management.exception.ConnectorException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 import com.ibm.websphere.pmi.stat.WSStats;
 
@@ -70,7 +71,10 @@ public class Capturer {
             }
         } catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
-        } 
+        } catch (ConnectorException e) {
+                L4j.getL4j().error("GENERIC Connector exception",e);
+        }
+        
         return wsStats;
     }
 

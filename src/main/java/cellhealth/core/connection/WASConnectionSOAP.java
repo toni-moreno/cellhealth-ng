@@ -61,7 +61,7 @@ public class WASConnectionSOAP implements WASConnection {
             } catch (ConnectorException e) {
                  L4j.getL4j().error("The system can not create get Session Info: ",e);
             }
-            L4j.getL4j().info("Connection to process \"deploy manager\" throughr" + properties.getProperty(AdminClient.CONNECTOR_TYPE) + "host" + properties.getProperty(AdminClient.CONNECTOR_HOST));
+            L4j.getL4j().info("Connection to process \"deploy manager\" through PROTOCOL: " + properties.getProperty(AdminClient.CONNECTOR_TYPE) + " into HOST: " + properties.getProperty(AdminClient.CONNECTOR_HOST));
             L4j.getL4j().info("Current Session| ID: "+ses.getSessionId()+" | UserName: " +ses.getUserName());
         }
     }

@@ -50,7 +50,7 @@ public class Settings {
     private static void readBaseProperties() {
         FileInputStream fileProperties;
         try {
-            fileProperties = new FileInputStream(Constants.PATH_CELLHEALT_PROPERTIES);
+            fileProperties = new FileInputStream(Constants.PATH_CELLHEALTH_PROPERTIES);
             Properties confProperties = new Properties();
             confProperties.load(fileProperties);
             instance.setHostWebsphere(confProperties.getProperty("was-adminhost"));

@@ -40,7 +40,7 @@ public class MBeansManager {
      * @param query consulta que se pasara al metodo queryNames
      * @return resultado de la consulta. Sino hay resultados devolverá nulo
      */
-    public Set<ObjectName> getMBeans(String query)  throws ConnectorNotAvailableException  {
+    public Set<ObjectName> getMBeans(String query)  throws ConnectorNotAvailableException,ConnectorException  {
         if(this.client == null) {
             throw new NullPointerException();
         }
@@ -53,6 +53,7 @@ public class MBeansManager {
         } catch (ConnectorException e) {
             String[] classNameSplit = this.getClass().getName().split("\\.");
             L4j.getL4j().error(classNameSplit[classNameSplit.length-1] + ", " + Error.CONNECTOR_ERROR, e);
+            throw new ConnectorException();
         } catch (MalformedObjectNameException e) {
             String[] classNameSplit = this.getClass().getName().split("\\.");
             L4j.getL4j().error(classNameSplit[classNameSplit.length-1] + ", " + Error.OBJECT_MALFORMED, e);
@@ -79,7 +80,7 @@ public class MBeansManager {
      * @param query consulta que se pasara al metodo queryNames
      * @return resultado de la consulta. Sino hay resultados devolverá nulo
      */
-    public ObjectName getMBean(String query) throws ConnectorNotAvailableException  {
+    public ObjectName getMBean(String query) throws ConnectorNotAvailableException,ConnectorException  {
         Set mbeans = this.getMBeans(query);
         ObjectName objectName = null;
         if(mbeans != null && mbeans.size() > 0) {
@@ -97,17 +98,17 @@ public class MBeansManager {
      * Lanza la consulta "WebSphere:*,type=Server,j2eeType=J2EEServer"
      * @return all runtime servers
      */
-    public Set<ObjectName> getAllServerRuntimes() throws ConnectorNotAvailableException   {
+    public Set<ObjectName> getAllServerRuntimes() throws ConnectorNotAvailableException,ConnectorException   {
             return this.getMBeans(Constants.QUERY_SERVER_RUNTIME);
     }
 
-    public String getNodeServerMBean() throws ConnectorNotAvailableException  {
+    public String getNodeServerMBean() throws ConnectorNotAvailableException,ConnectorException  {
         ObjectName objectName = getMBean("WebSphere:processType=ManagedProcess,*");
         return objectName.getKeyProperty("node");
     }
 
 
-    public Map<String,String> getPathHostChStats() throws ConnectorNotAvailableException  {
+    public Map<String,String> getPathHostChStats() throws ConnectorNotAvailableException,ConnectorException  {
         Map<String,String> pathChstats = new HashMap<String, String>();
         ObjectName dmgr = this.getMBean("WebSphere:processType=DeploymentManager,*");
         String cell = dmgr.getKeyProperty("cell");

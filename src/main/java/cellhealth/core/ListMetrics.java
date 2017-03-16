@@ -6,6 +6,7 @@ import cellhealth.core.statistics.MBeanStats;
 import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
+import com.ibm.websphere.management.exception.ConnectorException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 import com.ibm.websphere.pmi.stat.WSStats;
 
@@ -38,7 +39,7 @@ public class ListMetrics {
 
     }
 
-    public void list() throws ConnectorNotAvailableException {
+    public void list() throws ConnectorNotAvailableException,ConnectorException {
 
         List<String> options = new LinkedList<String>();
         options.add("yes");
@@ -87,6 +88,8 @@ public class ListMetrics {
                     }
                 } catch (ConnectorNotAvailableException e) {
                     L4j.getL4j().error("Connector not available",e);
+                } catch (ConnectorException e) {
+                    L4j.getL4j().error("GENERIC Connector Exception",e);
                 } catch(NumberFormatException e){
                     System.out.println("unknown option");
                 }
@@ -96,6 +99,8 @@ public class ListMetrics {
             serverPerfMBean = mbeansManager.getMBean("WebSphere:type=Perf,*");
             }  catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
+            }  catch (ConnectorException e) {
+                L4j.getL4j().error("GENERIC Connector exception",e);
             }
             String node = ((serverPerfMBean.getKeyProperty(Constants.NODE) == null) || (serverPerfMBean.getKeyProperty(Constants.NODE).length() == 0)) ? "<NOT SET IN CONFIG>" : serverPerfMBean.getKeyProperty(Constants.NODE);
             System.out.println("Server: " + serverPerfMBean.getKeyProperty("process") + " Node: " + node);

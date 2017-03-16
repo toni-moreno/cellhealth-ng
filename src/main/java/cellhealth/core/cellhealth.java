@@ -8,6 +8,7 @@ import cellhealth.utils.logs.L4j;
 import cellhealth.utils.properties.Settings;
 import cellhealth.utils.properties.xml.ReadMetricXml;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
+import com.ibm.websphere.management.exception.ConnectorException;
 
 
 import java.util.HashMap;
@@ -111,6 +112,8 @@ public class cellhealth {
             listMetrics.list();
         } catch (ConnectorNotAvailableException e) {
              L4j.getL4j().error("Connector not available",e);
+        } catch (ConnectorException e) {
+             L4j.getL4j().error("GENERIC Connector exception",e);
         }
     }
 
@@ -136,6 +139,8 @@ public class cellhealth {
             }
         } catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
+        } catch (ConnectorException e) {
+                L4j.getL4j().error("GENERIC Connector exception",e);
         }
     }
 
@@ -148,7 +153,10 @@ public class cellhealth {
             listMetrics.test();
         } catch (ConnectorNotAvailableException e) {
             L4j.getL4j().error("Connector not available",e);
+        } catch (ConnectorException e) {
+            L4j.getL4j().error("Generic Connector Exception",e);
         }
+        
     }
 
     public static void launchHelp() {

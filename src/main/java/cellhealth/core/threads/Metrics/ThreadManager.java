@@ -60,6 +60,9 @@ public class ThreadManager implements Runnable {
             } catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
                 connectToWebSphere();
+            } catch (ConnectorException e) {
+                L4j.getL4j().error("GENERIC Connector Exception trying to recoonect",e);
+                connectToWebSphere();
             } catch (InterruptedException e) {
                 start = false;
                 L4j.getL4j().error("TreadManager sleep error: ", e);
@@ -67,7 +70,7 @@ public class ThreadManager implements Runnable {
         }
     }
 
-    private void launchThreads() throws ConnectorNotAvailableException {
+    private void launchThreads() throws ConnectorNotAvailableException,ConnectorException {
         Set<ObjectName> runtimes = this.mbeansManager.getAllServerRuntimes();
         Date timeCountStart = new Date();
         ExecutorService executor = Executors.newFixedThreadPool(runtimes.size());

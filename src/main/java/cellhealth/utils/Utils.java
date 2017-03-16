@@ -4,6 +4,7 @@ import cellhealth.core.connection.MBeansManager;
 import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
+import com.ibm.websphere.management.exception.ConnectorException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
 
 import javax.management.ObjectName;
@@ -39,6 +40,8 @@ public class Utils {
             }
         } catch (ConnectorNotAvailableException e) {
             L4j.getL4j().error("showInstances Connector not available ",e);
+        } catch (ConnectorException e) {
+            L4j.getL4j().error("showInstances GENERIC Connector Exception ",e);
         }
     }
 

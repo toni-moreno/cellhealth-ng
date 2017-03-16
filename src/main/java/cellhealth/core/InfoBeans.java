@@ -34,7 +34,7 @@ public class InfoBeans {
         this.query = query;
     }
 
-    public void listBean() throws ConnectorNotAvailableException {
+    public void listBean() throws ConnectorNotAvailableException,ConnectorException {
         this.startFile("listbeans.info");
         for(ObjectName objectName: mbeansManager.getMBeans(this.query)){
             print("############## BEAN ##############\n");
@@ -48,7 +48,7 @@ public class InfoBeans {
         }
     }
 
-    public void listOperationsBean() throws ConnectorNotAvailableException {
+    public void listOperationsBean() throws ConnectorNotAvailableException,ConnectorException {
         this.startFile("listOperationBeans.info");
         for(ObjectName objectName: mbeansManager.getMBeans(this.query)){
             print("############## BEAN ##############\n");
@@ -64,7 +64,7 @@ public class InfoBeans {
         }
     }
 
-    public void listAttributesBean() throws ConnectorNotAvailableException {
+    public void listAttributesBean() throws ConnectorNotAvailableException,ConnectorException {
         this.startFile("listAttributeBeans.info");
         for(ObjectName objectName: mbeansManager.getMBeans(this.query)){
             print("############## BEAN ##############\n");
