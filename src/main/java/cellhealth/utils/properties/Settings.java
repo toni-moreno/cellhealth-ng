@@ -16,6 +16,7 @@ public class Settings {
 
     private String hostWebsphere;
     private String portWebsphere;
+    private String connType;
     private long threadInterval;
     private long senderInterval;
     private long soapInterval;
@@ -53,8 +54,9 @@ public class Settings {
             fileProperties = new FileInputStream(Constants.PATH_CELLHEALTH_PROPERTIES);
             Properties confProperties = new Properties();
             confProperties.load(fileProperties);
+            instance.setConnType(confProperties.getProperty("was-conntype"));
             instance.setHostWebsphere(confProperties.getProperty("was-adminhost"));
-            instance.setPortWebsphere(confProperties.getProperty("was-soapport"));
+            instance.setPortWebsphere(confProperties.getProperty("was-adminport"));
             instance.setThreadInterval(Long.valueOf(confProperties.getProperty("ch_query_interval_secs")) * 1000l);
             instance.setSenderInterval(Long.valueOf(confProperties.getProperty("ch_reconnect_timeout")) * 1000l);
             instance.setSoapInterval(Long.valueOf(confProperties.getProperty("ch_soap_interval_secs")) * 1000l);
@@ -87,6 +89,14 @@ public class Settings {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public String getConnType() {
+        return connType;
+    }
+
+    public void setConnType(String connType) {
+        this.connType = connType;
     }
 
     public String getHostWebsphere() {

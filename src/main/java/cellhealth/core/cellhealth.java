@@ -1,6 +1,8 @@
 package cellhealth.core;
 
+import cellhealth.core.connection.WASConnection;
 import cellhealth.core.connection.WASConnectionSOAP;
+import cellhealth.core.connection.WASConnectionRMI;
 
 import cellhealth.core.test.TestMetrics;
 import cellhealth.core.threads.Metrics.ThreadManager;
@@ -18,6 +20,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class cellhealth {
+    
+    public static WASConnection getWasConnection() {
+        if ( Settings.propertie().getConnType().equals("RMI") ){
+            L4j.getL4j().info("Begginning RMI connection .....");
+            return new WASConnectionRMI();
+        }
+        L4j.getL4j().info("Beggining SOAP Connection...");
+        return new WASConnectionSOAP();
+    }
 
     public static void main(String[] args) throws Exception {
         L4j.getL4j().setConfig(Settings.propertie().getPathLog(), Settings.propertie().getLogLevel());
@@ -29,6 +40,7 @@ public class cellhealth {
         mainOptions.add("-t");
         mainOptions.add("-h");
         List<String> configOptions = new LinkedList<String>();
+        configOptions.add("--type");
         configOptions.add("--host");
         configOptions.add("--port");
         int foundMainOptions = 0;
@@ -69,6 +81,9 @@ public class cellhealth {
             L4j.getL4j().info("Option not supported");
             L4j.getL4j().info("Try '-help' to see options");
         } else {
+            if(options.get("--type") != null){
+                Settings.propertie().setConnType(options.get("--type"));
+            }
             if(options.get("--host") != null){
                 Settings.propertie().setHostWebsphere(options.get("--host"));
             }
@@ -107,7 +122,7 @@ public class cellhealth {
     }
     public static void showListOfMetrics() {
         L4j.getL4j().info("Starting CellHealth - Metrics list");
-        ListMetrics listMetrics = new ListMetrics(new WASConnectionSOAP());
+        ListMetrics listMetrics = new ListMetrics(getWasConnection());
         try {
             listMetrics.list();
         } catch (ConnectorNotAvailableException e) {
@@ -119,7 +134,7 @@ public class cellhealth {
 
     public static void launchListBean(int option){
         Scanner scanner = new Scanner(System.in);
-        InfoBeans infoBeans = new InfoBeans(new WASConnectionSOAP());
+        InfoBeans infoBeans = new InfoBeans(getWasConnection());
 
         System.out.print("List results based on the query (*:* default): ");
         String query = scanner.nextLine();
@@ -146,9 +161,7 @@ public class cellhealth {
 
     public static void launchTest() {
         L4j.getL4j().info("Starting CellHealth - Metrics Tree");
-//        TreeBeans treeBeans = new TreeBeans(new WASConnectionSOAP());
-//        treeBeans.list();
-        TestMetrics listMetrics = new TestMetrics(new WASConnectionSOAP());
+        TestMetrics listMetrics = new TestMetrics(getWasConnection());
         try {
             listMetrics.test();
         } catch (ConnectorNotAvailableException e) {

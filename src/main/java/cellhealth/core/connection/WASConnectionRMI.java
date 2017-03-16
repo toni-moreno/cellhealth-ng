@@ -17,7 +17,7 @@ import java.util.Properties;
  * @author Alberto Pascual
  * @version 1.0
  */
-public class WASConnectionSOAP implements WASConnection {
+public class WASConnectionRMI implements WASConnection {
     private Session ses;
     private AdminClient client;
 
@@ -25,7 +25,7 @@ public class WASConnectionSOAP implements WASConnection {
      * En este caso el constructor es el encargado de establecer la conexion, con un retraso entre
      * intentos establecido en las propiedades
      */
-    public WASConnectionSOAP() {
+    public WASConnectionRMI() {
         do {
             this.connect();
             if(this.client == null) {
@@ -45,16 +45,18 @@ public class WASConnectionSOAP implements WASConnection {
      */
     public void connect() {
         Properties properties = new Properties();
-        Security.setProperty(Constants.SSL_SOCKETFACTORY_PROVIDER, Constants.JSSE2_SSLSOCKETFACTORYIMPL);
+        //Security.setProperty(Constants.SSL_SOCKETFACTORY_PROVIDER, Constants.JSSE2_SSLSOCKETFACTORYIMPL);
         properties.setProperty(AdminClient.CONNECTOR_HOST, Settings.propertie().getHostWebsphere());
         properties.setProperty(AdminClient.CONNECTOR_PORT, Settings.propertie().getPortWebsphere());
-        properties.setProperty(AdminClient.CONNECTOR_TYPE, AdminClient.CONNECTOR_TYPE_SOAP);
+        properties.setProperty(AdminClient.CONNECTOR_TYPE, AdminClient.CONNECTOR_TYPE_RMI);
+        //properties.setProperty(AdminClient.USERNAME, "waspuppet");
+        //properties.setProperty(AdminClient.PASSWORD, "12345678");
         try {
             this.client = AdminClientFactory.createAdminClient(properties);
            
         } catch (ConnectorException e) {
-            L4j.getL4j().error("The system can not create a SOAP connector to connect host " +  Settings.propertie().getHostWebsphere() + " on port " + Settings.propertie().getPortWebsphere());
-            L4j.getL4j().error("SOAP ERROR",e);
+            L4j.getL4j().error("The system can not create a RMI connector to connect host " +  Settings.propertie().getHostWebsphere() + " on port " + Settings.propertie().getPortWebsphere());
+            L4j.getL4j().error("RMI ERROR: ",e);
         }
         if(this.client != null) {
             try {
@@ -62,7 +64,7 @@ public class WASConnectionSOAP implements WASConnection {
             } catch (ConnectorException e) {
                  L4j.getL4j().error("The system can not create get Session Info: ",e);
             }
-            L4j.getL4j().info("Connection to process \"deploy manager\" through PROTOCOL: " + properties.getProperty(AdminClient.CONNECTOR_TYPE) + " into HOST: " + properties.getProperty(AdminClient.CONNECTOR_HOST) + " Port: " + properties.getProperty(AdminClient.CONNECTOR_PORT));           
+            L4j.getL4j().info("Connection to process \"deploy manager\" through PROTOCOL: " + properties.getProperty(AdminClient.CONNECTOR_TYPE) + " into HOST: " + properties.getProperty(AdminClient.CONNECTOR_HOST) + " Port: " + properties.getProperty(AdminClient.CONNECTOR_PORT));
             L4j.getL4j().info("Current Session| ID: "+ses.getSessionId()+" | UserName: " +ses.getUserName());
         }
     }

@@ -146,7 +146,7 @@ public class GraphiteSender implements Sender {
             //L4j.getL4j().debug("Send metric: " + graphiteMetric);
             channel.write(graphiteMetric);
         } catch (Exception e) {
-            e.printStackTrace();
+            L4j.getL4j().error("Graphite Send Error: ", e);
         }
     }
 

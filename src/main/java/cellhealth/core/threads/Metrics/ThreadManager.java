@@ -2,6 +2,7 @@ package cellhealth.core.threads.Metrics;
 
 import cellhealth.core.connection.MBeansManager;
 import cellhealth.core.connection.WASConnection;
+import cellhealth.core.connection.WASConnectionRMI;
 import cellhealth.core.connection.WASConnectionSOAP;
 import com.ibm.websphere.management.Session;
 import cellhealth.core.statistics.Capturer;
@@ -87,7 +88,7 @@ public class ThreadManager implements Runnable {
         try {
             executor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            L4j.getL4j().error("ThreadManager Interrupt error: ", e);
         }
         boolean waitToThreads = true;
         while(waitToThreads){
@@ -111,9 +112,17 @@ public class ThreadManager implements Runnable {
             }
         }
     }
+   public static WASConnection getWasConnection() {
+        if ( Settings.propertie().getConnType().equals("RMI") ){
+            L4j.getL4j().info("Begginning RMI connection .....");
+            return new WASConnectionRMI();
+        }
+        L4j.getL4j().info("Beggining SOAP Connection...");
+        return new WASConnectionSOAP();
+    }
 
     public void connectToWebSphere(){
-        this.wasConnection = new WASConnectionSOAP();
+        this.wasConnection = getWasConnection();
         this.startMBeansManager();
     }
     public Sender getSender(){
@@ -136,7 +145,7 @@ public class ThreadManager implements Runnable {
                 L4j.getL4j().warning("The sender is not connected , waiting to connect");
                 Thread.sleep(Settings.propertie().getSenderInterval() / 2);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                L4j.getL4j().error("ThreadManager Interrupt error: ", e);
             }
         }
     }
