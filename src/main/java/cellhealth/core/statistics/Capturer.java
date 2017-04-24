@@ -64,9 +64,10 @@ public class Capturer {
                     wsStats = (WSStats) mbeansManager.getClient().invoke(serverPerfMBean, "getStatsObject", params, signature);
                 } catch (JMRuntimeException e) {
                     L4j.getL4j().error("JMRuntime Exception ( Credentials maybe?) EXITING ",e);
-                    System.exit(-1);
+                    wsStats = null;
                 } catch (Exception e) {
                     L4j.getL4j().error("Capturer Generic Exception ", e);
+                    wsStats = null;
                 }
             }
         } catch (ConnectorNotAvailableException e) {
