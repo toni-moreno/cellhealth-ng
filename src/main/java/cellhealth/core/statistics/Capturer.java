@@ -24,16 +24,19 @@ public class Capturer {
     private MBeansManager mbeansManager;
     private String serverName;
     private String node;
+    private String cell;
     private List<MetricGroup> metricGroups;
     private PmiStatsType pmiStatsType;
     private ObjectName serverPerfMBean;
     private String host;
     private String prefix;
 
-    public Capturer(MBeansManager mbeansManager, String node, String serverName, CellHealthMetrics cellHealthMetrics) {
+    public Capturer(MBeansManager mbeansManager, String cell,String node, String serverName, CellHealthMetrics cellHealthMetrics) {
         this.mbeansManager = mbeansManager;
         this.serverName = serverName;
         this.node = node;
+        this.cell = cell;
+        //could be this can be configured once... and sent 
         this.metricGroups = cellHealthMetrics.getMetricGroups();
         this.pmiStatsType = cellHealthMetrics.getPmiStatsType();
         //Obtiene el host de un servidor
@@ -63,17 +66,17 @@ public class Capturer {
                 try {
                     wsStats = (WSStats) mbeansManager.getClient().invoke(serverPerfMBean, "getStatsObject", params, signature);
                 } catch (JMRuntimeException e) {
-                    L4j.getL4j().error("JMRuntime Exception ( Credentials maybe?) EXITING ",e);
+                    L4j.getL4j().error("Capturer - getWSStats : JMRuntime Exception ( Credentials maybe?) EXITING ",e);
                     wsStats = null;
                 } catch (Exception e) {
-                    L4j.getL4j().error("Capturer Generic Exception ", e);
+                    L4j.getL4j().error("Capturer - getWSStats : Generic Exception ", e);
                     wsStats = null;
                 }
             }
         } catch (ConnectorNotAvailableException e) {
-                L4j.getL4j().error("Connector not available",e);
+                L4j.getL4j().error("Capturer - getWSStats :Connector not available",e);
         } catch (ConnectorException e) {
-                L4j.getL4j().error("GENERIC Connector exception",e);
+                L4j.getL4j().error("Capturer - getWSStats :GENERIC Connector exception",e);
         }
         
         return wsStats;
@@ -87,11 +90,11 @@ public class Capturer {
                 if(especificStats != null){
                     stats.addAll(getStatsType(metricGroup, especificStats, true));
                 } else {
-                    L4j.getL4j().debug("Node: " + this.node + " Server: " + this.serverName + " Not found statstype " + metricGroup.getStatsType());
+                    L4j.getL4j().debug("Capturer - getStats :Node: " + this.node + " Server: " + this.serverName + " Not found statstype " + metricGroup.getStatsType());
                 }
             }
         } else {
-            L4j.getL4j().warning("Node: " + this.node + " Server: " + this.serverName + " Not found stats");
+            L4j.getL4j().warning("Capturer - getStats :Node: " + this.node + " Server: " + this.serverName + " Not found stats");
         }
         return stats;
     }
@@ -100,7 +103,13 @@ public class Capturer {
         List<Stats> result = new LinkedList<Stats>();
         List<Stats> globalStats;
         List<Stats> instances;
-        this.prefix = this.serverPerfMBean.getKeyProperty("cell") + "." + this.serverPerfMBean.getKeyProperty("process") + "." + metricGroup.getPrefix();
+        //finally we will use object initial properties for cell/node/serverName as this would be a constant in our platform
+        //String cell = this.serverPerfMBean.getKeyProperty("cell");
+        //String proc = this.serverPerfMBean.getKeyProperty("process");
+        String mgroup = metricGroup.getPrefix();
+        //normalizing graphite names without dots.
+        this.prefix = this.cell.replace(".", "_") +"."+ this.serverName.replace(".", "_")+"."+mgroup.replace(".", "_");
+        L4j.getL4j().debug("Capturer - getStatsType : SET PREFIX TO  NODE["+this.cell+"] CELL ["+this.node+"] + PROC["+this.serverName+"] + METRICGROUPPREFIX: "+mgroup);
         globalStats = getGlobalStats(wsStats, metricGroup, this.prefix);
         if(globalStats.size() > 0) {
             result.addAll(globalStats);

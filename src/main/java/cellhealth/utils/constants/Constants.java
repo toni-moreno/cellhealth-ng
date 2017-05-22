@@ -12,5 +12,6 @@ public class Constants {
     public static final String CELLHEALTH_PATH = System.getProperty("ch_dir_path");
     public final static String NAME = "name";
     public final static String NODE = "node";
+    public final static String CELL = "cell";
     public static final String QUERY_SERVER_RUNTIME = "WebSphere:*,type=Server,j2eeType=J2EEServer";
 }
