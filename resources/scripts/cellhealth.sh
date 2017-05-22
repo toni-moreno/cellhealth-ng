@@ -29,26 +29,38 @@ DMGR_PATH=`echo $SETUPCMDLINE_PATH | sed 's|/bin/setupCmdLine.sh||'`
 
 #check if  wsadmin.properties exist
 
-WSADMIN_PROPERTIES=$DMGR_PATH/properties/wsadmin.properties
-
-[ -f "$WSADMIN_PROPERTIES"  ] || {
-        echo "ERROR: not wsadmin.properties file found on $WSADMIN_PROPERTIES"
-        exit 1
-}
-
-DMGR_HOST=`grep "^com.ibm.ws.scripting.host" $WSADMIN_PROPERTIES | awk -F'=' '{ print $2}' `
-DMGR_PORT=`grep "^com.ibm.ws.scripting.port" $WSADMIN_PROPERTIES | awk -F'=' '{ print $2}' `
-
 DMGR_CONFIG=""
 
-if [[ -n "$DMGR_HOST" ]]
-then
-     DMGR_CONFIG="$DMGR_CONFIG --host $DMGR_HOST"
-fi
+if [ -z "$DONT_USE_WSADMIN_PROPERTIES" -o "$DONT_USE_WSADMIN_PROPERTIES" == "false" ] 
+then 
 
-if [[ -n "$DMGR_PORT" ]]
-then
-     DMGR_CONFIG="$DMGR_CONFIG --port $DMGR_PORT"
+	WSADMIN_PROPERTIES=$DMGR_PATH/properties/wsadmin.properties
+
+	[ -f "$WSADMIN_PROPERTIES"  ] || {
+        	echo "ERROR: not wsadmin.properties file found on $WSADMIN_PROPERTIES"
+        	exit 1
+	}
+
+	DMGR_CTYPE=`grep "^com.ibm.ws.scripting.connectionType" $WSADMIN_PROPERTIES | awk -F'=' '{ print $2}' `
+	DMGR_HOST=`grep "^com.ibm.ws.scripting.host" $WSADMIN_PROPERTIES | awk -F'=' '{ print $2}' `
+	DMGR_PORT=`grep "^com.ibm.ws.scripting.port" $WSADMIN_PROPERTIES | awk -F'=' '{ print $2}' `
+
+	if [[ -n "$DMGR_CTYPE" ]]
+	then
+     		DMGR_CONFIG="$DMGR_CONFIG --type $DMGR_CTYPE"
+	fi
+
+
+	if [[ -n "$DMGR_HOST" ]]
+	then
+     		DMGR_CONFIG="$DMGR_CONFIG --host $DMGR_HOST"
+	fi
+
+	if [[ -n "$DMGR_PORT" ]]
+	then
+     		DMGR_CONFIG="$DMGR_CONFIG --port $DMGR_PORT"
+	fi
+
 fi
 
 CLASSPATH=$(JARS=("$LIB_DIR"/*.jar); IFS=:; echo "${JARS[*]}"):${WAS_HOME}/runtimes/:${WAS_HOME}/lib/
@@ -74,7 +86,7 @@ function get_pidof() {
 }
 
 function start() {
-        CMD="${JAVA_HOME}/bin/java $CELLHEALTH_PATH $CONFILE $CLIENTSAS $STDINCLIENTSAS $SERVERSAS $CLIENTSOAP $CLIENTIPC $JAASSOAP $CLIENTSSL $WAS_LOGGING -cp $CLASSPATH:${CELLHEALTH_HOME}/lib $LOG4JAVA -jar ${MAIN_JAR} $DMGR_CONFIG $@"
+        CMD="${JAVA_HOME}/bin/java $CELLHEALTH_PATH $CONFILE $CLIENTSAS $CLIENTSOAP $CLIENTIPC $JAASSOAP $CLIENTSSL $WAS_LOGGING -cp $CLASSPATH:${CELLHEALTH_HOME}/lib $LOG4JAVA -jar ${MAIN_JAR} $DMGR_CONFIG $@"
 
         NUID=`id -nu`
         if [ "$EXEC_USER" == "$NUID" -o  -z "$EXEC_USER" ]
