@@ -106,14 +106,18 @@ public class ThreadManager implements Runnable {
                 L4j.getL4j().debug("ThreadManager - lauchThreads : Self stats activated: " + Settings.propertie().isSelfStats());
                 Long time_took =  new Date().getTime() - timeCountStart.getTime();
                 if(Settings.propertie().isSelfStats()) {
-                    chStats.getSelfStats(String.valueOf(time_took));
-                    L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats size: " + chStats.getStats().size());
-                    if (chStats.getStats() != null) {
-                        for (String metric : chStats.getStats()) {
-                            sender.send(chStats.getHost(), metric);
+                    try {
+                        chStats.getSelfStats(String.valueOf(time_took));
+                        L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats size: " + chStats.getStats().size());
+                        if (chStats.getStats() != null) {
+                            for (String metric : chStats.getStats()) {
+                                sender.send(chStats.getHost(), metric);
+                            }
                         }
+                        L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats sent OK");
+                    } catch (Exception e) {
+                        L4j.getL4j().error("ThreadManager - lauchThreads : SelfStats Interrupt error: ", e);
                     }
-                    L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats sent OK");
                 }
                 L4j.getL4j().debug("ThreadManager - lauchThreads : Thread Pool has terminated OK time TOOK: "+time_took+" ms");
                 waitToThreads = false;
