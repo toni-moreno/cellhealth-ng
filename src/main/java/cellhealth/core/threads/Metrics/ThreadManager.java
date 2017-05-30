@@ -45,35 +45,37 @@ public class ThreadManager implements Runnable {
         Utils.showInstances(this.mbeansManager);
         boolean start = true;
         while(start){
-            L4j.getL4j().debug("TreadManager - run : Begining Thread Manager Loop");
+            L4j.getL4j().debug("ThreadManager - run : Begining Loop Iteration");
             try {
                 long start_time=System.currentTimeMillis();
                 this.launchThreads();
                 long elapsed = (System.currentTimeMillis() - start_time);
                 long waittime = Settings.propertie().getThreadInterval()-elapsed;
-                L4j.getL4j().debug("TreadManager - run : Wait time : " + String.valueOf(waittime)+" ms");
+                L4j.getL4j().debug("ThreadManager - run : Wait time : " + String.valueOf(waittime)+" ms");
                 if (waittime > 0 ) {
                     Thread.sleep(Settings.propertie().getThreadInterval()-elapsed);
                 } else {
                     Thread.sleep(Settings.propertie().getThreadInterval());
-                    L4j.getL4j().warning("TreadManager - run : The WaitTime has been computed less than 0 :"+String.valueOf(waittime) );
+                    L4j.getL4j().warning("ThreadManager - run : The WaitTime has been computed less than 0 :"+String.valueOf(waittime) );
                 }
             } catch (ConnectorNotAvailableException e) {
-                L4j.getL4j().error(" TreadManager - run :Connector not available",e);
+                L4j.getL4j().error(" ThreadManager - run :Connector not available",e);
                 connectToWebSphere();
             } catch (ConnectorException e) {
-                L4j.getL4j().error("TreadManager - run : GENERIC Connector Exception trying to recoonect",e);
+                L4j.getL4j().error("ThreadManager - run : GENERIC Connector Exception trying to recoonect",e);
                 connectToWebSphere();
             } catch (InterruptedException e) {
                 start = false;
-                L4j.getL4j().error("TreadManager - run : sleep error: ", e);
+                L4j.getL4j().error("ThreadManager - run : sleep error: ", e);
             }
         }
+        L4j.getL4j().debug("ThreadManager - run : End Loop Iteration");
     }
 
     //Perhaps could be better use the ScheduledThreadPool
     //http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/
     private void launchThreads() throws ConnectorNotAvailableException,ConnectorException {
+        L4j.getL4j().debug("ThreadManager - lauchThreads : BEGIN");
         Set<ObjectName> runtimes = this.mbeansManager.getAllServerRuntimes();
         Date timeCountStart = new Date();
         ExecutorService thpool = Executors.newFixedThreadPool(runtimes.size());
@@ -98,26 +100,31 @@ public class ThreadManager implements Runnable {
              } catch (InterruptedException e) {
                 L4j.getL4j().error("ThreadManager- launchThreads Interrupt error: ", e);
             }
-            Long elapsed =  new Date().getTime() - timeCountStart.getTime();
-            L4j.getL4j().debug("ThreadManager - lauchThreads : WaitToThreads Elapsed: " + elapsed+ " ms");
+ 
             if(thpool.isTerminated()){
                 L4j.getL4j().debug("ThreadManager - lauchThreads : POOL Finished OK!!");
                 L4j.getL4j().debug("ThreadManager - lauchThreads : Self stats activated: " + Settings.propertie().isSelfStats());
+                Long time_took =  new Date().getTime() - timeCountStart.getTime();
                 if(Settings.propertie().isSelfStats()) {
-                    chStats.getSelfStats(String.valueOf(elapsed));
+                    chStats.getSelfStats(String.valueOf(time_took));
                     L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats size: " + chStats.getStats().size());
                     if (chStats.getStats() != null) {
                         for (String metric : chStats.getStats()) {
                             sender.send(chStats.getHost(), metric);
                         }
                     }
+                    L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats sent OK");
                 }
+                L4j.getL4j().debug("ThreadManager - lauchThreads : Thread Pool has terminated OK time TOOK: "+time_took+" ms");
                 waitToThreads = false;
             }
+            Long elapsed =  new Date().getTime() - timeCountStart.getTime();
+            L4j.getL4j().debug("ThreadManager - lauchThreads : WaitToThreads Elapsed: " + elapsed+ " ms");
             if(elapsed >= Settings.propertie().getThreadInterval()){
                 L4j.getL4j().error("ThreadManager - lauchThreads - The threads are taking too much : "+elapsed+" ms");
             }
         }
+        L4j.getL4j().debug("ThreadManager - lauchThreads : END");
     }
    public static WASConnection getWasConnection() {
         if ( Settings.propertie().getConnType().equals("RMI") ){
