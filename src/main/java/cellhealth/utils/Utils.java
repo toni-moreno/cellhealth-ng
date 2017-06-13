@@ -26,7 +26,7 @@ public class Utils {
     public static String getHostByNode(String node){
         node = node.toLowerCase();
         String[] nodeSplit = node.split("node");
-        return nodeSplit[0];
+        return nodeSplit[0].replaceAll("[\\W]", "");
     }
 
     public static void showInstances(MBeansManager mbeansManager) {
