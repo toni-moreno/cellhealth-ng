@@ -26,7 +26,9 @@ public class Utils {
     public static String getHostByNode(String node){
         node = node.toLowerCase();
         String[] nodeSplit = node.split("node");
-        return nodeSplit[0].replaceAll("[\\W]", "");
+        String host = nodeSplit[0].replaceAll("[\\W]", "");
+        L4j.getL4j().debug("GET HOSTNAME :" + host + " From NODE: " + node);
+        return host ;
     }
 
     public static void showInstances(MBeansManager mbeansManager) {
