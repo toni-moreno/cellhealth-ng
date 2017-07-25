@@ -63,7 +63,7 @@ public class Stats {
         this.add(".metrics.global.number_metrics", String.valueOf(this.getMetrics()));
         this.add(".os.freememory", String.valueOf(runtime.freeMemory()));
         this.add(".os.maxmemory", String.valueOf(runtime.maxMemory()));
-        this.add(".os.totalmemory", String.valueOf(""));
+        this.add(".os.totalmemory", String.valueOf(runtime.totalMemory()));
         this.add(".os.availableprocessors" , String.valueOf(runtime.availableProcessors()));
         for(GarbageCollectorMXBean garbageCollectorMXBean: ManagementFactory.getGarbageCollectorMXBeans()){
             String name = garbageCollectorMXBean.getName().replace(" ", "_");
