@@ -30,24 +30,26 @@ public class MetricsCollector implements Runnable {
         List<cellhealth.core.statistics.Stats> metrics = this.capturer.getMetrics();
         long serverIn = (System.currentTimeMillis() - start_time);
         this.sendAllMetricRange(metrics);
-        if(this.capturer.getPrefix() != null && Settings.propertie().isSelfStats()) {
-            try {
-                Map<String,String> chStatsPath = this.capturer.getMbeansManager().getPathHostChStats();
+        if(this.capturer.getPrefix() != null && Settings.properties().isSelfStats()) {
+           // try {
                 String[] aux = this.capturer.getPrefix().split("\\.");
+                /*
+                Map<String,String> chStatsPath = this.capturer.getMbeansManager().getPathHostChStats();
+                
                 if (this.chStats.getPathChStats() == null) {
                     this.chStats.setPathChStats(chStatsPath.get("path"));
                 }
                 if (this.chStats.getHost() == null) {
                     this.chStats.setHost(chStatsPath.get("host"));
-                }
+                }*/
                 this.chStats.add(".metrics." + aux[1] + ".retrieve_time", String.valueOf(serverIn));
                 this.chStats.add(".metrics." + aux[1] + ".number_metrics", String.valueOf(metrics.size()));
                 this.chStats.count(metrics.size());
-            }catch (ConnectorNotAvailableException e) {
+            /*}catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
             }catch (ConnectorException e) {
                 L4j.getL4j().error("GENERIC Connector not available",e);
-            }
+            }*/
         }
     }
 

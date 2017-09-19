@@ -17,12 +17,12 @@ public class L4j {
 
     private L4j(){
         ConsoleAppender console = new ConsoleAppender();
-        console.setName(Settings.propertie().getAppName());
-        console.setLayout(new PatternLayout(Settings.propertie().getL4jPattern()));
+        console.setName(Settings.properties().getAppName());
+        console.setLayout(new PatternLayout(Settings.properties().getL4jPattern()));
         console.setThreshold(Level.INFO);
         console.activateOptions();
         Logger.getRootLogger().addAppender(console);
-        log = Logger.getLogger(Settings.propertie().getL4jGetLogger());
+        log = Logger.getLogger(Settings.properties().getL4jGetLogger());
     }
 
     public static L4j getL4j() {
@@ -31,15 +31,15 @@ public class L4j {
 
     public void setConfig(String filename, String level) {
         FileAppender fileAppender = new FileAppender();
-        fileAppender.setName(Settings.propertie().getAppName());
+        fileAppender.setName(Settings.properties().getAppName());
         fileAppender.setFile(filename);
-        fileAppender.setLayout(new PatternLayout(Settings.propertie().getL4jPatternConfig()));
+        fileAppender.setLayout(new PatternLayout(Settings.properties().getL4jPatternConfig()));
         fileAppender.setThreshold(Level.toLevel(level));
         fileAppender.setAppend(true);
         fileAppender.activateOptions();
         Logger.getRootLogger().getLoggerRepository().resetConfiguration();
         Logger.getRootLogger().addAppender(fileAppender);
-        log = Logger.getLogger(Settings.propertie().getAppName());
+        log = Logger.getLogger(Settings.properties().getAppName());
     }
 
     public void critical(String msg) {

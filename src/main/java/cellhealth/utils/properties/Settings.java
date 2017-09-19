@@ -30,11 +30,12 @@ public class Settings {
     private String pathLog;
     private String logLevel;
     private boolean isSelfStats;
+    private boolean getHostNameFromNodeName;
 
     private Settings() {
     }
 
-    public static synchronized Settings propertie() {
+    public static synchronized Settings properties() {
         if (instance == null) {
             instance = new Settings();
             instance.globalProperties();
@@ -53,6 +54,9 @@ public class Settings {
         try {
             fileProperties = new FileInputStream(Constants.PATH_CELLHEALTH_PROPERTIES);
             Properties confProperties = new Properties();
+            //default properties
+            confProperties.setProperty("ch_get_hostname_from_nodename","true");
+            //load from file
             confProperties.load(fileProperties);
             instance.setConnType(confProperties.getProperty("was-conntype"));
             instance.setHostWebsphere(confProperties.getProperty("was-adminhost"));
@@ -67,6 +71,7 @@ public class Settings {
             String logLevel = (confProperties.getProperty("ch_output_log_level") == null) ? "INFO" : confProperties.getProperty("ch_output_log_level");
             instance.setLogLevel(logLevel);
             instance.setSelfStats(Boolean.valueOf(confProperties.getProperty("ch_enable_self_jvm_stats")));
+            instance.setHostNameFromNodeName(Boolean.valueOf(confProperties.getProperty("ch_get_hostname_from_nodename")));
             fileProperties.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -225,5 +230,13 @@ public class Settings {
 
     public void setSelfStats(boolean isSelfStats) {
         this.isSelfStats = isSelfStats;
+    }
+    
+    public boolean getHostNameFromNodeName() {
+        return getHostNameFromNodeName;
+    }
+
+    public void setHostNameFromNodeName(boolean hxn) {
+        this.getHostNameFromNodeName = hxn;
     }
 }

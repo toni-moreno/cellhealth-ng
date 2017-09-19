@@ -30,7 +30,7 @@ public class WASConnectionRMI implements WASConnection {
             this.connect();
             if(this.client == null) {
                 try {
-                    Thread.sleep(Settings.propertie().getSoapInterval());
+                    Thread.sleep(Settings.properties().getSoapInterval());
                 } catch (InterruptedException e) {
                     L4j.getL4j().error("SOAP ERROR",e);
                 }
@@ -46,8 +46,8 @@ public class WASConnectionRMI implements WASConnection {
     public void connect() {
         Properties properties = new Properties();
         //Security.setProperty(Constants.SSL_SOCKETFACTORY_PROVIDER, Constants.JSSE2_SSLSOCKETFACTORYIMPL);
-        properties.setProperty(AdminClient.CONNECTOR_HOST, Settings.propertie().getHostWebsphere());
-        properties.setProperty(AdminClient.CONNECTOR_PORT, Settings.propertie().getPortWebsphere());
+        properties.setProperty(AdminClient.CONNECTOR_HOST, Settings.properties().getHostWebsphere());
+        properties.setProperty(AdminClient.CONNECTOR_PORT, Settings.properties().getPortWebsphere());
         properties.setProperty(AdminClient.CONNECTOR_TYPE, AdminClient.CONNECTOR_TYPE_RMI);
         //properties.setProperty(AdminClient.USERNAME, "waspuppet");
         //properties.setProperty(AdminClient.PASSWORD, "12345678");
@@ -55,7 +55,7 @@ public class WASConnectionRMI implements WASConnection {
             this.client = AdminClientFactory.createAdminClient(properties);
            
         } catch (ConnectorException e) {
-            L4j.getL4j().error("The system can not create a RMI connector to connect host " +  Settings.propertie().getHostWebsphere() + " on port " + Settings.propertie().getPortWebsphere());
+            L4j.getL4j().error("The system can not create a RMI connector to connect host " +  Settings.properties().getHostWebsphere() + " on port " + Settings.properties().getPortWebsphere());
             L4j.getL4j().error("RMI ERROR: ",e);
         }
         if(this.client != null) {

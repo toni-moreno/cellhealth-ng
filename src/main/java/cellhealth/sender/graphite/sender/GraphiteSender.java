@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executors;
@@ -45,12 +46,27 @@ public class GraphiteSender implements Sender {
     private Pipeline pipeline;
     private ChannelFuture channelFuture;
     private Map<String,Integer> count;
+    private Map<String, String> nodeMapPrefix;
+    private boolean nodeMapPrefixEnabled;
 
     public GraphiteSender(){
         boolean haveProperties = true;
         this.graphiteProperties = new Properties();
         try {
             this.graphiteProperties.load(new FileInputStream(Settings.getInstance().getPathSenderConf()));
+            String forcedPrefix =this.graphiteProperties.getProperty("forceNodeMapPrefix");
+            if ( forcedPrefix != null && forcedPrefix.length()>0) {
+                this.nodeMapPrefix = new LinkedHashMap<String, String>();
+                this.nodeMapPrefixEnabled = true;
+                for(String keyValue : this.graphiteProperties.getProperty("forceNodeMapPrefix").split(" *, *")) {
+                   String[] pairs = keyValue.split(" *= *", 2);
+                   String key = pairs[0];
+                   String val = pairs.length == 1 ? "" : pairs[1];
+                   this.nodeMapPrefix.put(key,val );
+                   L4j.getL4j().info("CONFIG NODEMAP FOR NODE ["+key+"] set prefix ["+val+"]");
+                }
+            }
+
         } catch (IOException e) {
             haveProperties = false;
         }
@@ -68,7 +84,8 @@ public class GraphiteSender implements Sender {
         this.graphiteProperties.setProperty("sendBufferSize", "1048576");
         this.graphiteProperties.setProperty("hostPrefix", "pro.bbdd");
         this.graphiteProperties.setProperty("metricUseHost", "true");
-        this.graphiteProperties.setProperty("hostSuffix", "wls");
+        this.graphiteProperties.setProperty("hostSuffix", "was");
+        this.graphiteProperties.setProperty("forceNodeMapPrefix", "");
     }
 
     public void init(){
@@ -137,11 +154,24 @@ public class GraphiteSender implements Sender {
         return isConnected;
     }
 
-    public void send(String host, String metrica) {
+    public void send(String host, String metric) {
+        String prefix;
+        if (this.nodeMapPrefixEnabled) {
+            String value = this.nodeMapPrefix.get(host);
+            if (value == null) {
+                prefix =this.graphiteProperties.getProperty("hostPrefix")+ "." + host;
+                L4j.getL4j().warning("HOST ["+host+"] has not associated map !!");
+            } else {
+                prefix = value;
+            }
+           
+        } else {
+            prefix = this.graphiteProperties.getProperty("hostPrefix") + "." + host;
+        }
+
+        String sufix = this.graphiteProperties.getProperty("hostSuffix");
+        String graphiteMetric = prefix + "." + sufix + "." + metric + "\n";
         try {
-            String prefix = this.graphiteProperties.getProperty("hostPrefix");
-            String sufix = this.graphiteProperties.getProperty("hostSuffix");
-            String graphiteMetric = prefix + "." + host + "." + sufix + "." + metrica + "\n";
             Channel channel = pipeline.getCurrentPipeline().getChannel();
             //L4j.getL4j().debug("Send metric: " + graphiteMetric);
             channel.write(graphiteMetric);

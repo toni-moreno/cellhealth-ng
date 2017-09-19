@@ -19,6 +19,7 @@ import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 
 import javax.management.ObjectName;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,12 +51,12 @@ public class ThreadManager implements Runnable {
                 long start_time=System.currentTimeMillis();
                 this.launchThreads();
                 long elapsed = (System.currentTimeMillis() - start_time);
-                long waittime = Settings.propertie().getThreadInterval()-elapsed;
+                long waittime = Settings.properties().getThreadInterval()-elapsed;
                 L4j.getL4j().debug("ThreadManager - run : Wait time : " + String.valueOf(waittime)+" ms");
                 if (waittime > 0 ) {
-                    Thread.sleep(Settings.propertie().getThreadInterval()-elapsed);
+                    Thread.sleep(Settings.properties().getThreadInterval()-elapsed);
                 } else {
-                    Thread.sleep(Settings.propertie().getThreadInterval());
+                    Thread.sleep(Settings.properties().getThreadInterval());
                     L4j.getL4j().warning("ThreadManager - run : The WaitTime has been computed less than 0 :"+String.valueOf(waittime) );
                 }
             } catch (ConnectorNotAvailableException e) {
@@ -81,6 +82,17 @@ public class ThreadManager implements Runnable {
         ExecutorService thpool = Executors.newFixedThreadPool(runtimes.size());
         checkConnections();
         Stats chStats = new Stats();
+        try {
+                Map<String,String> chStatsPath = this.mbeansManager.getPathHostChStats();
+                chStats.setPathChStats(chStatsPath.get("path"));
+                chStats.setHost(chStatsPath.get("host"));
+               
+        } catch (ConnectorNotAvailableException e) {
+                L4j.getL4j().error("Connector not available",e);
+        }catch (ConnectorException e) {
+                L4j.getL4j().error("GENERIC Connector not available",e);
+        }
+        
         for(ObjectName serverRuntime: runtimes){
             String serverName = serverRuntime.getKeyProperty(Constants.NAME);
             String node = serverRuntime.getKeyProperty(Constants.NODE);
@@ -103,9 +115,9 @@ public class ThreadManager implements Runnable {
  
             if(thpool.isTerminated()){
                 L4j.getL4j().debug("ThreadManager - lauchThreads : POOL Finished OK!!");
-                L4j.getL4j().debug("ThreadManager - lauchThreads : Self stats activated: " + Settings.propertie().isSelfStats());
+                L4j.getL4j().debug("ThreadManager - lauchThreads : Self stats activated: " + Settings.properties().isSelfStats());
                 Long time_took =  new Date().getTime() - timeCountStart.getTime();
-                if(Settings.propertie().isSelfStats()) {
+                if(Settings.properties().isSelfStats()) {
                     try {
                         chStats.getSelfStats(String.valueOf(time_took));
                         L4j.getL4j().debug("ThreadManager - lauchThreads : SelfStats size: " + chStats.getStats().size());
@@ -124,14 +136,14 @@ public class ThreadManager implements Runnable {
             }
             Long elapsed =  new Date().getTime() - timeCountStart.getTime();
             L4j.getL4j().debug("ThreadManager - lauchThreads : WaitToThreads Elapsed: " + elapsed+ " ms");
-            if(elapsed >= Settings.propertie().getThreadInterval()){
+            if(elapsed >= Settings.properties().getThreadInterval()){
                 L4j.getL4j().error("ThreadManager - lauchThreads - The threads are taking too much : "+elapsed+" ms");
             }
         }
         L4j.getL4j().debug("ThreadManager - lauchThreads : END");
     }
    public static WASConnection getWasConnection() {
-        if ( Settings.propertie().getConnType().equals("RMI") ){
+        if ( Settings.properties().getConnType().equals("RMI") ){
             L4j.getL4j().info("Begginning RMI connection .....");
             return new WASConnectionRMI();
         }
@@ -161,7 +173,7 @@ public class ThreadManager implements Runnable {
         while(!sender.isConnected()){
             try {
                 L4j.getL4j().warning("The sender is not connected , waiting to connect");
-                Thread.sleep(Settings.propertie().getSenderInterval() / 2);
+                Thread.sleep(Settings.properties().getSenderInterval() / 2);
             } catch (InterruptedException e) {
                 L4j.getL4j().error("ThreadManager Interrupt error: ", e);
             }

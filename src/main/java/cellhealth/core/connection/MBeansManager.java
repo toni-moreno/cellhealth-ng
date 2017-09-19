@@ -111,8 +111,14 @@ public class MBeansManager {
     public Map<String,String> getPathHostChStats() throws ConnectorNotAvailableException,ConnectorException  {
         Map<String,String> pathChstats = new HashMap<String, String>();
         ObjectName dmgr = this.getMBean("WebSphere:processType=DeploymentManager,*");
+        L4j.getL4j().info("ObjectName for DMGR set to ["+dmgr.getCanonicalName()+"]");
         String cell = dmgr.getKeyProperty("cell");
-        if(cell != null) {
+        String node = dmgr.getKeyProperty("node");
+        String host = Utils.getHostByNode(node);
+        pathChstats.put("path", cell + ".ch_stats");
+        pathChstats.put("host", host);
+        pathChstats.put("node", node);
+        /*if(cell != null) {
             String query = "WebSphere:processType=ManagedProcess,cell=" + cell + ",*";
             String chStatsNode = "";
             String chStatsHost = "";
@@ -120,19 +126,24 @@ public class MBeansManager {
             String path = "";
             String host = "";
             for (ObjectName objectName : this.getMBeans(query)) {
+                L4j.getL4j().info("ObjectName set to ["+objectName.getCanonicalName()+"]");
                 chStatsNode = objectName.getKeyProperty("node");
+                L4j.getL4j().info("INIT PATHS FROM DMGR MBEAN [node] set to ["+chStatsNode+"]");
                 chStatsHost = Utils.getHostByNode(chStatsNode);
+                L4j.getL4j().info("INIT PATHS FROM DMGR MBEAN [host] set to ["+chStatsHost+"]");
                 chStatsCell = objectName.getKeyProperty("cell");
+                L4j.getL4j().info("INIT PATHS FROM DMGR MBEAN [cell] set to ["+chStatsCell+"]");
                 if (path == null || path.length() == 0) {
                     if ((chStatsNode != null && chStatsNode.length() > 0) && (chStatsHost != null && chStatsHost.length() > 0) && (chStatsCell != null && chStatsCell.length() > 0)) {
                         path = chStatsCell + ".ch_stats";
+                        L4j.getL4j().info("INIT PATHS FROM DMGR MBEAN [path] set to ["+path+"]");
                         host = chStatsHost;
                         pathChstats.put("path", path);
                         pathChstats.put("host", host);
                     }
                 }
             }
-        } 
+        }*/
         return pathChstats;
     }
 }

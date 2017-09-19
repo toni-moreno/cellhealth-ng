@@ -1,5 +1,6 @@
 package cellhealth.core.statistics.chStats;
 
+import cellhealth.utils.logs.L4j;
 import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.CompilationMXBean;
 import java.lang.management.GarbageCollectorMXBean;
@@ -43,6 +44,7 @@ public class Stats {
 
     public void add(String name, String metric) {
         this.stats.add(this.pathChStats + name + " " + metric + " " + System.currentTimeMillis() / 1000L);
+        L4j.getL4j().debug("ADDING Stats metric [" +this.pathChStats + name + "] metric  ["+metric+"]");
     }
 
     public String getPathChStats() {

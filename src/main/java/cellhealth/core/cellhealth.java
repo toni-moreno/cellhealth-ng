@@ -22,7 +22,7 @@ import java.util.Scanner;
 public class cellhealth {
     
     public static WASConnection getWasConnection() {
-        if ( Settings.propertie().getConnType().equals("RMI") ){
+        if ( Settings.properties().getConnType().equals("RMI") ){
             L4j.getL4j().info("Begginning RMI connection .....");
             return new WASConnectionRMI();
         }
@@ -31,7 +31,7 @@ public class cellhealth {
     }
 
     public static void main(String[] args) throws Exception {
-        L4j.getL4j().setConfig(Settings.propertie().getPathLog(), Settings.propertie().getLogLevel());
+        L4j.getL4j().setConfig(Settings.properties().getPathLog(), Settings.properties().getLogLevel());
         List<String> mainOptions = new LinkedList<String>();
         mainOptions.add("-l");
         mainOptions.add("-b");
@@ -82,13 +82,13 @@ public class cellhealth {
             L4j.getL4j().info("Try '-help' to see options");
         } else {
             if(options.get("--type") != null){
-                Settings.propertie().setConnType(options.get("--type"));
+                Settings.properties().setConnType(options.get("--type"));
             }
             if(options.get("--host") != null){
-                Settings.propertie().setHostWebsphere(options.get("--host"));
+                Settings.properties().setHostWebsphere(options.get("--host"));
             }
             if(options.get("--port") != null) {
-                Settings.propertie().setPortWebsphere(options.get("--port"));
+                Settings.properties().setPortWebsphere(options.get("--port"));
             }
             if ("-l".equals(option)) {
                 showListOfMetrics();

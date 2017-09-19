@@ -6,6 +6,7 @@ import cellhealth.utils.logs.L4j;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 import com.ibm.websphere.management.exception.ConnectorException;
 import com.ibm.websphere.pmi.stat.WSStatistic;
+import cellhealth.utils.properties.Settings;
 
 import javax.management.ObjectName;
 import java.util.List;
@@ -24,6 +25,11 @@ public class Utils {
         return "N/A";
     }
     public static String getHostByNode(String node){
+        if(!Settings.properties().getHostNameFromNodeName()) {
+            L4j.getL4j().debug("GET HOSTNAME  from Node Name disabled: hostname will be set as the NodeName: "  + node);
+            return node;
+        }
+        
         node = node.toLowerCase();
         String[] nodeSplit = node.split("node");
         String host = nodeSplit[0].replaceAll("[\\W]", "");
