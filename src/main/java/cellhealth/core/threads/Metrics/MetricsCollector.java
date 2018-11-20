@@ -1,15 +1,12 @@
 package cellhealth.core.threads.Metrics;
 
 import cellhealth.core.statistics.Capturer;
+
 import cellhealth.core.statistics.chStats.Stats;
 import cellhealth.sender.Sender;
-import cellhealth.utils.logs.L4j;
 import cellhealth.utils.properties.Settings;
-import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
-import com.ibm.websphere.management.exception.ConnectorException;
-
 import java.util.List;
-import java.util.Map;
+import org.influxdb.dto.Point.Builder;
 
 
 public class MetricsCollector implements Runnable {
@@ -45,6 +42,11 @@ public class MetricsCollector implements Runnable {
                 this.chStats.add(".metrics." + aux[1] + ".retrieve_time", String.valueOf(serverIn));
                 this.chStats.add(".metrics." + aux[1] + ".number_metrics", String.valueOf(metrics.size()));
                 this.chStats.count(metrics.size());
+        		Builder bPoint = this.chStats.getInitialBPoint();
+                bPoint.tag("server", aux[1]);
+                this.chStats.addFieldToBPoint(bPoint, "metrics.retrieve_time", serverIn);
+                this.chStats.addFieldToBPoint(bPoint, "metrics.number_metrics", (new Long(metrics.size()).longValue()));
+            	this.chStats.add(bPoint);
             /*}catch (ConnectorNotAvailableException e) {
                 L4j.getL4j().error("Connector not available",e);
             }catch (ConnectorException e) {
@@ -56,7 +58,7 @@ public class MetricsCollector implements Runnable {
     private void sendAllMetricRange(List<cellhealth.core.statistics.Stats> metrics) {
         if(metrics != null) {
             for (cellhealth.core.statistics.Stats stats : metrics) {
-                sender.send(stats.getHost(), stats.getMetric());
+                sender.send(stats);
             }
         }
     }

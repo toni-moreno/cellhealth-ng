@@ -23,10 +23,10 @@ public class cellhealth {
     
     public static WASConnection getWasConnection() {
         if ( Settings.properties().getConnType().equals("RMI") ){
-            L4j.getL4j().info("Begginning RMI connection .....");
+            L4j.getL4j().info("Beginning RMI connection .....");
             return new WASConnectionRMI();
         }
-        L4j.getL4j().info("Beggining SOAP Connection...");
+        L4j.getL4j().info("Beginning SOAP Connection...");
         return new WASConnectionSOAP();
     }
 
@@ -108,12 +108,12 @@ public class cellhealth {
                 L4j.getL4j().info("#        CellHealth-ng         #");
                 L4j.getL4j().info("################################");
                 L4j.getL4j().info("Try '-help' to see options");
-                startCellehealth();
+                startCellHealth();
             }
         }
     }
 
-    public static void startCellehealth() {
+    public static void startCellHealth() {
         L4j.getL4j().info("Starting CellHealth - Normal mode");
         ReadMetricXml readMetricXml = new ReadMetricXml();
         ThreadManager manager = new ThreadManager(readMetricXml.getCellHealthMetrics());
@@ -156,6 +156,8 @@ public class cellhealth {
                 L4j.getL4j().error("Connector not available",e);
         } catch (ConnectorException e) {
                 L4j.getL4j().error("GENERIC Connector exception",e);
+        } finally {
+        	scanner.close();
         }
     }
 
@@ -177,7 +179,7 @@ public class cellhealth {
         System.out.println("# WebSphere metrics collection #");
         System.out.println("#        CellHealth-ng         #");
         System.out.println("################################");
-        System.out.println("Cellhealth have a diferents options");
+        System.out.println("CellHealth has different options");
         System.out.println("OPTIONS:");
         System.out.println("\t-l Show list of server beans");
         System.out.println("\t-b Show all beans");

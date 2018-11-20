@@ -97,8 +97,8 @@ public class ReadMetricXml {
                 Element element = (Element) no;
                 if ("CountStatistic".equals(no.getNodeName())) {
                     pmiStatsType.setCountStatistic("count", getBooleanAttribute(element, "count"));
-                } else if ("DoubleStatisc".equals(element.getTagName())) {
-                    pmiStatsType.setDoubleStatisc("count", getBooleanAttribute(element, "count"));
+                } else if ("DoubleStatistic".equals(element.getTagName())) {
+                    pmiStatsType.setDoubleStatistic("count", getBooleanAttribute(element, "count"));
                 } else if ("AverageStatistic".equals(no.getNodeName())) {
                     Map<String, Boolean> averageStatistic = new HashMap<String, Boolean>();
                     averageStatistic.put("count", getBooleanAttribute(element, "count"));
@@ -109,7 +109,7 @@ public class ReadMetricXml {
                 } else if ("BoundaryStatistic".equals(no.getNodeName())) {
                     Map<String, Boolean> boundaryStatistic = new HashMap<String, Boolean>();
                     boundaryStatistic.put("upperBound", getBooleanAttribute(element, "upperBound"));
-                    boundaryStatistic.put("lowebBound", getBooleanAttribute(element, "lowebBound"));
+                    boundaryStatistic.put("lowerBound", getBooleanAttribute(element, "lowerBound"));
                     pmiStatsType.setBoundaryStatistic(boundaryStatistic);
                 } else if ("RangeStatistic".equals(no.getNodeName())) {
                     Map<String, Boolean> rangeStatistic = new HashMap<String, Boolean>();
@@ -118,17 +118,17 @@ public class ReadMetricXml {
                     rangeStatistic.put("current", getBooleanAttribute(element, "current"));
                     rangeStatistic.put("integral", getBooleanAttribute(element, "integral"));
                     pmiStatsType.setRangeStatistic(rangeStatistic);
-                } else if ("TimeStatitic".equals(no.getNodeName())) {
-                    Map<String, Boolean> timeStatitic = new HashMap<String, Boolean>();
-                    timeStatitic.put("count", getBooleanAttribute(element, "count"));
-                    timeStatitic.put("total", getBooleanAttribute(element, "total"));
-                    timeStatitic.put("min", getBooleanAttribute(element, "min"));
-                    timeStatitic.put("max", getBooleanAttribute(element, "max"));
-                    pmiStatsType.setTimeStatitic(timeStatitic);
+                } else if ("TimeStatistic".equals(no.getNodeName())) {
+                    Map<String, Boolean> timeStatistic = new HashMap<String, Boolean>();
+                    timeStatistic.put("count", getBooleanAttribute(element, "count"));
+                    timeStatistic.put("total", getBooleanAttribute(element, "total"));
+                    timeStatistic.put("min", getBooleanAttribute(element, "min"));
+                    timeStatistic.put("max", getBooleanAttribute(element, "max"));
+                    pmiStatsType.setTimeStatistic(timeStatistic);
                 } else if ("BoundedRangeStatistic".equals(no.getNodeName())) {
                     Map<String, Boolean> boundedRangeStatistic = new HashMap<String, Boolean>();
                     boundedRangeStatistic.put("upperBound", getBooleanAttribute(element, "upperBound"));
-                    boundedRangeStatistic.put("lowebBound", getBooleanAttribute(element, "lowebBound"));
+                    boundedRangeStatistic.put("lowerBound", getBooleanAttribute(element, "lowerBound"));
                     boundedRangeStatistic.put("highWaterMark", getBooleanAttribute(element, "highWaterMark"));
                     boundedRangeStatistic.put("lowWaterMark", getBooleanAttribute(element, "lowWaterMark"));
                     boundedRangeStatistic.put("current", getBooleanAttribute(element, "current"));

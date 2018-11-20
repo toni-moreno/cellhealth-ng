@@ -78,7 +78,7 @@ public class MBeansManager {
     /**
      * Igual que getBeans, con la diferencia que tan solo devuelve el primer resultado devuelto, por la consulta
      * @param query consulta que se pasara al metodo queryNames
-     * @return resultado de la consulta. Sino hay resultados devolverá nulo
+     * @return resultado de la consulta. Si no hay resultados devolverá nulo
      */
     public ObjectName getMBean(String query) throws ConnectorNotAvailableException,ConnectorException  {
         Set mbeans = this.getMBeans(query);
@@ -116,8 +116,10 @@ public class MBeansManager {
         String node = dmgr.getKeyProperty("node");
         String host = Utils.getHostByNode(node);
         pathChstats.put("path", cell + ".ch_stats");
+        pathChstats.put("cell", cell);
         pathChstats.put("host", host);
         pathChstats.put("node", node);
+        pathChstats.put("measurement", "ch_stats");
         /*if(cell != null) {
             String query = "WebSphere:processType=ManagedProcess,cell=" + cell + ",*";
             String chStatsNode = "";

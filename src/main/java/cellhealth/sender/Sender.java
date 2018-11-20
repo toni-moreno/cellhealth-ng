@@ -6,6 +6,8 @@ package cellhealth.sender;
 public interface Sender {
 
     public boolean isConnected();
-
-    public void send(String host, String metrica);
+    public String getType();
+    public void send(cellhealth.core.statistics.Stats stats);
+    public void send(cellhealth.core.statistics.chStats.Stats chStats);
+    public void init();
 }

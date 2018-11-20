@@ -2,15 +2,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cellhealth-ng</groupId>
     <artifactId>cellhealth-ng</artifactId>
-    <version>0.8</version>
+    <version>0.9</version>
     <properties>
         <base.path>cellhealth-ng/</base.path>
         <junit.version>4.12</junit.version>
-        <assembly.version>2.4</assembly.version>
-        <resources.version>2.7</resources.version>
+        <assembly.version>3.1.0</assembly.version>
+        <resources.version>3.0.2</resources.version>
         <log4j.version>1.2.17</log4j.version>
         <compiler.version>3.3</compiler.version>
-        <jdk.version>1.5</jdk.version>
+        <jdk.version>1.6</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
@@ -24,21 +24,54 @@
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+        <!-- 
         <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>admin.client</artifactId>
             <version>8.5.0</version>
         </dependency>
         <dependency>
+            <groupId>org.influxdb</groupId>
+            <artifactId>influxdb-java-java6</artifactId>
+            <version>2.3</version>
+        </dependency>
+        -->
+        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.8.0.Final</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.fabric3.api</groupId>
-            <artifactId>commonj</artifactId>
-            <version>1.1.0</version>
-        </dependency>
+		<dependency>
+			<groupId>com.squareup.retrofit</groupId>
+			<artifactId>retrofit</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okio</groupId>
+			<artifactId>okio-parent</artifactId>
+			<version>1.2.0</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>animal-sniffer-annotations</artifactId>
+			<version>1.13</version>
+		</dependency>
     </dependencies>
     <build>
         <plugins>
@@ -59,7 +92,7 @@
             </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
-                 <artifactId>git-commit-id-plugin</artifactId>
+                <artifactId>git-commit-id-plugin</artifactId>
                 <version>2.1.13</version>
                 <!--
                      Ensure that the revision goal is invoked during the initialize
@@ -96,7 +129,6 @@
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${assembly.version}</version>
                     <configuration>
-
                         <outputDirectory>${base.path}/bin/</outputDirectory>
                         <descriptorRefs>
                             <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -137,6 +169,10 @@
                                     <resource>
                                         <targetPath>./conf/</targetPath>
                                         <directory>resources/conf</directory>
+                                    </resource>
+                                    <resource>
+                                        <targetPath>./lib/</targetPath>
+                                        <directory>lib</directory>
                                     </resource>
                                     <resource>
                                         <targetPath>./</targetPath>

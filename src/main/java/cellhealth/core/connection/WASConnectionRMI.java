@@ -1,6 +1,5 @@
 package cellhealth.core.connection;
 
-import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
 import cellhealth.utils.properties.Settings;
 import com.ibm.websphere.management.Session;
@@ -8,7 +7,6 @@ import com.ibm.websphere.management.AdminClient;
 import com.ibm.websphere.management.AdminClientFactory;
 import com.ibm.websphere.management.exception.ConnectorException;
 
-import java.security.Security;
 import java.util.Properties;
 
 /**

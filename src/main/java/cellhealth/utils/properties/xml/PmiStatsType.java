@@ -12,11 +12,11 @@ public class PmiStatsType {
     private String unitSeparator;
     private boolean separateMetric;
     private Map<String, Boolean> countStatistic;
-    private Map<String, Boolean> doubleStatisc;
+    private Map<String, Boolean> doubleStatistic;
     private Map<String, Boolean> averageStatistic;
     private Map<String, Boolean> boundaryStatistic;
     private Map<String, Boolean> rangeStatistic;
-    private Map<String, Boolean> timeStatitic;
+    private Map<String, Boolean> timeStatistic;
     private Map<String, Boolean> boundedRangeStatistic;
 
     public PmiStatsType() {}
@@ -30,9 +30,9 @@ public class PmiStatsType {
         return this.countStatistic;
     }
 
-    public void setDoubleStatisc(String type, boolean state){
-        this.doubleStatisc = new HashMap<String, Boolean>();
-        this.doubleStatisc.put(type, state);
+    public void setDoubleStatistic(String type, boolean state){
+        this.doubleStatistic = new HashMap<String, Boolean>();
+        this.doubleStatistic.put(type, state);
     }
 
     public Map<String, Boolean> getAverageStatistic() {
@@ -59,12 +59,12 @@ public class PmiStatsType {
         this.rangeStatistic = rangeStatistic;
     }
 
-    public Map<String, Boolean> getTimeStatitic() {
-        return timeStatitic;
+    public Map<String, Boolean> getTimeStatistic() {
+        return timeStatistic;
     }
 
-    public void setTimeStatitic(Map<String, Boolean> timeStatitic) {
-        this.timeStatitic = timeStatitic;
+    public void setTimeStatistic(Map<String, Boolean> timeStatistic) {
+        this.timeStatistic = timeStatistic;
     }
 
     public Map<String, Boolean> getBoundedRangeStatistic() {
@@ -75,8 +75,8 @@ public class PmiStatsType {
         this.boundedRangeStatistic = boundedRangeStatistic;
     }
 
-    public Map<String, Boolean> getDoubleStatisc(){
-        return this.doubleStatisc;
+    public Map<String, Boolean> getDoubleStatistic(){
+        return this.doubleStatistic;
     }
 
     public boolean isUnit() {
