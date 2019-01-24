@@ -4,6 +4,7 @@ import cellhealth.sender.Sender;
 import cellhealth.sender.graphite.channel.Pipeline;
 import cellhealth.utils.logs.L4j;
 import cellhealth.utils.properties.Settings;
+
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors;
  */
 public class GraphiteSender implements Sender {
 
+    private String type = "graphite";
     private static boolean isShuttingDown;
     private Properties graphiteProperties;
     private static String DEFAULT_CONF = "Properties not found will be initialized by default";
@@ -83,7 +85,6 @@ public class GraphiteSender implements Sender {
         this.graphiteProperties.setProperty("reconnectTimeout","60");
         this.graphiteProperties.setProperty("sendBufferSize", "1048576");
         this.graphiteProperties.setProperty("hostPrefix", "pro.bbdd");
-        this.graphiteProperties.setProperty("metricUseHost", "true");
         this.graphiteProperties.setProperty("hostSuffix", "was");
         this.graphiteProperties.setProperty("forceNodeMapPrefix", "");
     }
@@ -154,7 +155,21 @@ public class GraphiteSender implements Sender {
         return isConnected;
     }
 
-    public void send(String host, String metric) {
+    public String getType() {
+    	return this.type;
+    }
+
+    public void send(cellhealth.core.statistics.Stats stats) {
+    	this.send(stats.getHost(), stats.getMetric());
+    }
+    
+    public void send(cellhealth.core.statistics.chStats.Stats chStats) {
+        for (String metric : chStats.getStats()) {
+        	this.send(chStats.getHost(), metric);
+        }
+    }
+    
+    private void send(String host, String metric) {
         String prefix;
         if (this.nodeMapPrefixEnabled) {
             String value = this.nodeMapPrefix.get(host);
@@ -172,14 +187,14 @@ public class GraphiteSender implements Sender {
         String sufix = this.graphiteProperties.getProperty("hostSuffix");
         String graphiteMetric = prefix + "." + sufix + "." + metric + "\n";
         try {
-            Channel channel = pipeline.getCurrentPipeline().getChannel();
             //L4j.getL4j().debug("Send metric: " + graphiteMetric);
+            Channel channel = pipeline.getCurrentPipeline().getChannel();
             channel.write(graphiteMetric);
         } catch (Exception e) {
             L4j.getL4j().error("Graphite Send Error: ", e);
         }
     }
-
+    
     public static boolean isShuttingDown() {
         return isShuttingDown;
     }

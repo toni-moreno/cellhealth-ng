@@ -7,7 +7,6 @@ import cellhealth.utils.constants.Constants;
 import cellhealth.utils.logs.L4j;
 import com.ibm.websphere.management.exception.ConnectorNotAvailableException;
 import com.ibm.websphere.management.exception.ConnectorException;
-import com.ibm.websphere.pmi.stat.WSStatistic;
 import com.ibm.websphere.pmi.stat.WSStats;
 
 import javax.management.ObjectName;

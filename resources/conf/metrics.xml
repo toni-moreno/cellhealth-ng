@@ -2,12 +2,12 @@
 <CellHealthMetrics>
     <PMIStatsType unit="true" unitseparator="_" separateMetric="false">
         <CountStatistic count="true" />
-        <DoubleStatisc count="true"/>
+        <DoubleStatistic count="true"/>
         <AverageStatistic count="true" total="false" min="false" max="true"/>
-        <BoundaryStatistic upperBound="true" lowebBound="false" />
+        <BoundaryStatistic upperBound="true" lowerBound="false" />
         <RangeStatistic highWaterMark="true" lowWaterMark="false" current="true" integral="false"/>
-        <TimeStatitic count="true" total="false" min="false" max="true"/>
-        <BoundedRangeStatistic upperBound="true" lowebBound="false" highWaterMark="true" lowWaterMark="false" current="true" integral="false"/>
+        <TimeStatistic count="true" total="false" min="false" max="true"/>
+        <BoundedRangeStatistic upperBound="true" lowerBound="false" highWaterMark="true" lowWaterMark="false" current="true" integral="false"/>
     </PMIStatsType>
     <MetricGroup>
         <StatsType>jvmRuntimeModule</StatsType>
@@ -31,7 +31,7 @@
                 <Name>Yeah</Name>
 
             </Metric>
-            <Metric calculated="true">
+            <Metric id="20" calculated="true">
                 <Name>YE</Name>
                 <Expresion>3[upperbound]+5[]</Expresion>
             </Metric>

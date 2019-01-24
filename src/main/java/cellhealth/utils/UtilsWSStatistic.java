@@ -142,7 +142,7 @@ public class UtilsWSStatistic {
 
     private static List<Stats> getTimeStatistic(String prefix, WSStatistic wsStatistic, PmiStatsType pmiStatsType, String node) {
         String metricName = "";//(pmiStatsType.getMetricName() == null || pmiStatsType.getMetricName().length() == 0)?wsStatistic.getName():pmiStatsType.getMetricName();
-        Map<String, Boolean> mapTimeStatistic = pmiStatsType.getTimeStatitic();
+        Map<String, Boolean> mapTimeStatistic = pmiStatsType.getTimeStatistic();
         String metricSeparator = getMetricSeparator(pmiStatsType);
         List<Stats> result = new LinkedList<Stats>();
         WSTimeStatistic timeStatistic = (WSTimeStatistic) wsStatistic;
@@ -202,7 +202,7 @@ public class UtilsWSStatistic {
             stats.setMetric(prefix + "." + metricName + metricSeparator + "upperbound" + unity + boundaryStatistic.getUpperBound() + " " + System.currentTimeMillis() / 1000L);
             result.add(stats);
         }
-        if(mapBoundaryStatistic.get("lowebBound")) {
+        if(mapBoundaryStatistic.get("lowerBound")) {
             Stats stats = new Stats();
             stats.setHost(node);
             stats.setMetric(prefix + "." + metricName + metricSeparator + "lowerbound" + unity + boundaryStatistic.getLowerBound() + " " + System.currentTimeMillis() / 1000L);
@@ -280,7 +280,7 @@ public class UtilsWSStatistic {
             stats.setMetric(prefix + "." + metricName + metricSeparator + "upperbound" + unity + boundedRangeStatistic.getUpperBound() + " " + System.currentTimeMillis() / 1000L);
             result.add(stats);
         }
-        if(mapBoundedRangeStatistic.get("lowebBound")) {
+        if(mapBoundedRangeStatistic.get("lowerBound")) {
             Stats stats = new Stats();
             stats.setHost(node);
             stats.setMetric(prefix + "." + metricName + metricSeparator + "lowerbound" + unity + boundedRangeStatistic.getLowerBound() + " " + System.currentTimeMillis() / 1000L);

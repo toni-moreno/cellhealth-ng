@@ -27,6 +27,7 @@ public class Settings {
     private String l4jGetLogger;
     private String pathConf;
     private String pathSenderConf;
+    private String senderType;
     private String pathLog;
     private String logLevel;
     private boolean isSelfStats;
@@ -65,6 +66,7 @@ public class Settings {
             instance.setSenderInterval(Long.valueOf(confProperties.getProperty("ch_reconnect_timeout")) * 1000l);
             instance.setSoapInterval(Long.valueOf(confProperties.getProperty("ch_soap_interval_secs")) * 1000l);
             instance.setPathSenderConf(instance.getPathConf() + confProperties.getProperty("sender_properties"));
+            instance.setSenderType(confProperties.getProperty("sender_type"));
             String logPath = (confProperties.getProperty("ch_output_log_path") == null) ? "cellhealth-ng.log" : confProperties.getProperty("ch_output_log_path");
             logPath = Constants.CELLHEALTH_PATH + "logs/" + logPath;
             instance.setPathLog(logPath);
@@ -182,6 +184,14 @@ public class Settings {
 
     public void setPathSenderConf(String pathSenderConf) {
         this.pathSenderConf = pathSenderConf;
+    }
+
+    public String getSenderType() {
+        return senderType;
+    }
+
+    public void setSenderType(String senderType) {
+        this.senderType = senderType;
     }
 
     public String getPathLog() {
